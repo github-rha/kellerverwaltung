@@ -1,0 +1,76 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Wine Cellar",
+  "description": "Canonical data format for wine cellar inventory stored in a GitHub repository.",
+  "type": "object",
+  "required": ["schemaVersion", "wines"],
+  "additionalProperties": false,
+  "properties": {
+    "schemaVersion": {
+      "const": 1
+    },
+    "wines": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/WineEntry"
+      }
+    }
+  },
+  "$defs": {
+    "WineEntry": {
+      "type": "object",
+      "required": [
+        "id",
+        "producer",
+        "producerKey",
+        "name",
+        "vintage",
+        "bottles",
+        "notes",
+        "photoRef"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "producer": {
+          "type": "string",
+          "minLength": 1
+        },
+        "producerKey": {
+          "type": "string",
+          "minLength": 1
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "vintage": {
+          "oneOf": [
+            {
+              "type": "integer",
+              "minimum": 1900,
+              "maximum": 3000
+            },
+            {
+              "const": "NV"
+            }
+          ]
+        },
+        "bottles": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "notes": {
+          "type": "string"
+        },
+        "photoRef": {
+          "type": "string",
+          "pattern": "^photos/.+\\.avif$"
+        }
+      }
+    }
+  }
+}

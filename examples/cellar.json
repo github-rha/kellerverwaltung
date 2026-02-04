@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "wines": [
+    {
+      "id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+      "producer": "Weingut Keller",
+      "producerKey": "weingut-keller",
+      "name": "Riesling Trocken",
+      "vintage": 2021,
+      "bottles": 6,
+      "notes": "From the Rheinhessen region",
+      "photoRef": "photos/a1b2c3d4-e5f6-7890-abcd-ef1234567890.avif"
+    },
+    {
+      "id": "b2c3d4e5-f6a7-8901-bcde-f23456789012",
+      "producer": "Domaine de la Romanee-Conti",
+      "producerKey": "domaine-de-la-romanee-conti",
+      "name": "Romanee-Conti Grand Cru",
+      "vintage": 2018,
+      "bottles": 2,
+      "notes": "",
+      "photoRef": "photos/b2c3d4e5-f6a7-8901-bcde-f23456789012.avif"
+    },
+    {
+      "id": "c3d4e5f6-a7b8-9012-cdef-345678901234",
+      "producer": "Pol Roger",
+      "producerKey": "pol-roger",
+      "name": "Brut Reserve",
+      "vintage": "NV",
+      "bottles": 12,
+      "notes": "Non-vintage champagne",
+      "photoRef": "photos/c3d4e5f6-a7b8-9012-cdef-345678901234.avif"
+    }
+  ]
+}
