@@ -21,19 +21,24 @@
       "type": "object",
       "required": [
         "id",
+        "type",
         "producer",
         "producerKey",
         "name",
         "vintage",
         "bottles",
         "notes",
-        "photoRef"
+        "photoRef",
+        "addedAt"
       ],
       "additionalProperties": false,
       "properties": {
         "id": {
           "type": "string",
           "format": "uuid"
+        },
+        "type": {
+          "enum": ["red", "white", "sparkling", "dessert"]
         },
         "producer": {
           "type": "string",
@@ -68,7 +73,11 @@
         },
         "photoRef": {
           "type": "string",
-          "pattern": "^photos/.+\\.avif$"
+          "pattern": "^(photos/.+\\.avif)?$"
+        },
+        "addedAt": {
+          "type": "string",
+          "format": "date-time"
         }
       }
     }
