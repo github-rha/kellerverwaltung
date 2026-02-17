@@ -4,6 +4,9 @@ import { SvelteKitPWA } from '@vite-pwa/sveltekit'
 import { defineConfig } from 'vite'
 
 export default defineConfig({
+	worker: {
+		format: 'es'
+	},
 	plugins: [
 		tailwindcss(),
 		sveltekit(),
@@ -30,7 +33,8 @@ export default defineConfig({
 				]
 			},
 			workbox: {
-				globPatterns: ['**/*.{js,css,html,svg,png,woff2}']
+				globPatterns: ['**/*.{js,css,html,svg,png,woff2}'],
+				maximumFileSizeToCacheInBytes: 5 * 1024 * 1024
 			}
 		})
 	]

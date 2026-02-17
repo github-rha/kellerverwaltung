@@ -2,7 +2,9 @@
 	import { page } from '$app/stores'
 	import { goto } from '$app/navigation'
 	import { resolve } from '$app/paths'
+	import { untrack } from 'svelte'
 	import WineForm from '$lib/components/WineForm.svelte'
+	import { loadPhoto } from '$lib/data/persist'
 	import { cellarStore, adjustCount, updateWine, deleteWine } from '$lib/data/store'
 	import type { WineType } from '$lib/data/types'
 
@@ -11,6 +13,35 @@
 
 	let mode: 'view' | 'edit' = $state('view')
 	let error = $state('')
+	let photoUrl: string | null = $state(null)
+
+	function revokePhoto() {
+		if (photoUrl) {
+			URL.revokeObjectURL(photoUrl)
+			photoUrl = null
+		}
+	}
+
+	$effect(() => {
+		const ref = wine?.photoRef
+		const wineId = wine?.id
+
+		untrack(revokePhoto)
+
+		if (!ref || !wineId) return
+
+		let cancelled = false
+		loadPhoto(wineId).then((blob) => {
+			if (!cancelled && blob) {
+				photoUrl = URL.createObjectURL(blob)
+			}
+		})
+
+		return () => {
+			cancelled = true
+			untrack(revokePhoto)
+		}
+	})
 
 	// Edit form state
 	let editType: WineType = $state('red')
@@ -143,6 +174,10 @@
 			<div class="text-xs text-gray-400">
 				Added {new Date(wine.addedAt).toLocaleDateString()}
 			</div>
+
+			{#if photoUrl}
+				<img src={photoUrl} alt="Wine label" class="w-full rounded-lg" />
+			{/if}
 		</div>
 	{:else}
 		<header class="bg-white border-b border-gray-200 px-4 py-3">

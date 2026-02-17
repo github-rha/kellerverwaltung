@@ -1,5 +1,14 @@
 # Changelog
 
+## v0.3.0 — Photo capture (2026-02-17)
+
+### Added
+
+- Camera capture on the create wine form (rear camera via `capture="environment"`)
+- AVIF encoding on main thread with @jsquash/avif (quality 50, max 1200px)
+- Photo displayed on wine detail view
+- Photo stored as ArrayBuffer in IndexedDB, cleaned up on wine deletion
+
 ## v0.2.0 — Filter, sort, and producer grouping (2026-02-16)
 
 ### Added

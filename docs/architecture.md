@@ -48,32 +48,37 @@ Renders views, handles touch input, and dispatches user intents to the
 data layer.
 
 ```
-┌────────────────────────────────────────────────────────────┐
-│                         UI layer                           │
-│                                                            │
-│  ┌──────────────────────────┐     ┌──────────────────────┐ │
-│  │  Dashboard               │     │  Wine detail         │ │
-│  │  • total bottle count    │ tap │                      │ │
-│  │  • wine list             │wine │  View mode (default):│ │
-│  │  • Filter (type,         │────>│  • all fields (read) │ │
-│  │    producer) button      │     │  • photo             │ │
-│  │  • Sort (vintage,        │<────│  • +1 / -1           │ │
-│  │    date added) button    │back │  • edit button       │ │
-│  │  • Add wine button ──────│────>│  • "more from this   │ │
-│  │                          │ new │    producer" → back  │ │
-│  │                          │     │                      │ │
-│  │                          │     │  Edit mode:          │ │
-│  │                          │     │  • fields editable   │ │
-│  │                          │     │  • save / cancel     │ │
-│  │  • sync controls         │     └──────────────────────┘ │
-│  │    (or "set up sync"     │                              │
-│  │     if unconfigured)     │                              │
-│  └────────────┬─────────────┘     ┌──────────────────────┐ │
-│               │                   │  Settings            │ │
-│               │  gear icon        │  • repo (owner/repo) │ │
-│               └──────────────────>│  • PAT               │ │
-│                                   └──────────────────────┘ │
-└────────────────────────────────────────────────────────────┘
+┌──────────────────────────────────────────────────────────────┐
+│                          UI layer                             │
+│                                                              │
+│  ┌──────────────────────────┐     ┌────────────────────────┐ │
+│  │  Dashboard               │     │  Wine detail           │ │
+│  │  • total bottle count    │ tap │                        │ │
+│  │  • wine list             │wine │  View mode (default):  │ │
+│  │  • Filter (type,         │────>│  • all fields (read)   │ │
+│  │    producer) button      │     │  • photo (if present)  │ │
+│  │  • Sort (vintage,        │<────│  • +1 / -1             │ │
+│  │    date added) button    │back │  • edit button         │ │
+│  │                          │     │  • "more from this     │ │
+│  │                          │     │    producer" → back    │ │
+│  │                          │     │                        │ │
+│  │                          │     │  Edit mode:            │ │
+│  │                          │     │  • fields editable     │ │
+│  │                          │     │  • save / cancel       │ │
+│  │                          │     └────────────────────────┘ │
+│  │  • Add wine button ──────│──┐                             │
+│  │                          │  │  ┌────────────────────────┐ │
+│  │  • sync controls         │  └─>│  Add wine              │ │
+│  │    (or "set up sync"     │ new │  • all fields           │ │
+│  │     if unconfigured)     │<────│  • photo capture        │ │
+│  └────────────┬─────────────┘save │  • save / cancel        │ │
+│               │                   └────────────────────────┘ │
+│               │                   ┌────────────────────────┐ │
+│               │  gear icon        │  Settings              │ │
+│               └──────────────────>│  • repo (owner/repo)   │ │
+│                                   │  • PAT                 │ │
+│                                   └────────────────────────┘ │
+└──────────────────────────────────────────────────────────────┘
 ```
 
 Key views:
@@ -81,7 +86,8 @@ Key views:
 | View            | Responsibility                               |
 |-----------------|----------------------------------------------|
 | Dashboard       | Total bottle count, scrollable wine list. Add wine button. Filter button (by type: red/white/sparkling/dessert, or by producer). Sort button (by vintage or date added). Sync controls (manual push/pull, status indicator) — or a "set up sync" link to Settings if no PAT is configured. |
-| Wine detail     | **View mode** (default): all fields read-only, photo, +1/-1 buttons, edit button, "more from this producer" → dashboard filtered. **Edit mode**: fields become editable, save/cancel. **Create mode** (from add wine): same as edit mode but with empty fields (photo-first flow with OCR pre-fill planned). |
+| Wine detail     | **View mode** (default): all fields read-only, +1/-1 buttons, photo (if present), edit button, "more from this producer" → dashboard filtered. **Edit mode**: fields become editable, save/cancel. |
+| Add wine        | Create form with all fields + optional photo capture. Photo is encoded to AVIF and saved after wine creation. |
 | Settings        | Repo (owner/repo) and PAT input. One-time setup, accessed via gear icon on dashboard. |
 
 ### Data layer

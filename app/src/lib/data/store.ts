@@ -1,5 +1,5 @@
 import { writable } from 'svelte/store'
-import { loadCellar, saveCellar } from './persist'
+import { deletePhoto, loadCellar, saveCellar } from './persist'
 import { producerKey } from './producer-key'
 import type { Cellar, WineEntry, WineType } from './types'
 import { validate } from './validate'
@@ -82,6 +82,10 @@ export async function updateWine(
 }
 
 export async function deleteWine(id: string): Promise<void> {
+	const wine = cellar.wines.find((w) => w.id === id)
+	if (wine?.photoRef) {
+		await deletePhoto(id)
+	}
 	cellar = { ...cellar, wines: cellar.wines.filter((w) => w.id !== id) }
 	await persist()
 }

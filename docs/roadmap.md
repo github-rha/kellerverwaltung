@@ -16,11 +16,14 @@ Plan: `docs/plan/20260216-initial-version.md`
 
 Plan: `docs/plan/20260216-filter-sort-producer-grouping.md`
 
-## v0.3.0 — Photo capture
+## v0.3.0 — Photo capture ✓
 
-- Camera button on wine detail (create and edit)
-- Capture label photo, convert to AVIF, store in IndexedDB
-- Display photo thumbnail on detail view
+- Camera capture on the create wine form
+- Capture label photo, resize to max 1200px, convert to AVIF, store in IndexedDB
+- Display photo on wine detail view
+- Photo cleaned up when wine is deleted
+
+Plan: `docs/plan/20260217-photo-capture.md`
 
 ## v0.4.0 — GitHub sync
 
