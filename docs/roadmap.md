@@ -7,12 +7,14 @@ Installable PWA, works offline.
 
 Plan: `docs/plan/20260216-initial-version.md`
 
-## v0.2.0 — Filter, sort, and producer grouping
+## v0.2.0 — Filter, sort, and producer grouping ✓
 
 - Filter dashboard by wine type (red/white/sparkling/dessert)
 - Filter dashboard by producer
 - Sort by vintage or date added
 - "More from this producer" button on wine detail
+
+Plan: `docs/plan/20260216-filter-sort-producer-grouping.md`
 
 ## v0.3.0 — Photo capture
 

@@ -2,13 +2,18 @@
 	import type { WineEntry } from '$lib/data/types'
 	import WineRow from './WineRow.svelte'
 
-	let { wines }: { wines: WineEntry[] } = $props()
+	let { wines, filtered = false }: { wines: WineEntry[]; filtered?: boolean } = $props()
 </script>
 
 {#if wines.length === 0}
 	<div class="px-4 py-12 text-center text-gray-500">
-		<p class="text-lg">No wines yet</p>
-		<p class="text-sm mt-1">Tap + to add your first bottle</p>
+		{#if filtered}
+			<p class="text-lg">No wines match your filters</p>
+			<p class="text-sm mt-1">Try removing a filter</p>
+		{:else}
+			<p class="text-lg">No wines yet</p>
+			<p class="text-sm mt-1">Tap + to add your first bottle</p>
+		{/if}
 	</div>
 {:else}
 	<div class="divide-y divide-gray-200">

@@ -133,6 +133,13 @@
 				</div>
 			{/if}
 
+			<a
+				href="{resolve('/')}?producer={encodeURIComponent(wine.producerKey)}"
+				class="block text-sm font-medium text-red-800"
+			>
+				More from {wine.producer} &rarr;
+			</a>
+
 			<div class="text-xs text-gray-400">
 				Added {new Date(wine.addedAt).toLocaleDateString()}
 			</div>
