@@ -28,6 +28,7 @@
         "vintage",
         "bottles",
         "notes",
+        "country",
         "photoRef",
         "addedAt"
       ],
@@ -69,6 +70,9 @@
           "minimum": 0
         },
         "notes": {
+          "type": "string"
+        },
+        "country": {
           "type": "string"
         },
         "photoRef": {

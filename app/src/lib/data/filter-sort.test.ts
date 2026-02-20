@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import type { WineEntry } from './types'
-import { filterByType, filterByProducer, sortWines } from './filter-sort'
+import { filterByType, filterByProducer, filterByCountry, sortWines } from './filter-sort'
 
 function makeWine(overrides: Partial<WineEntry> = {}): WineEntry {
 	return {
@@ -12,6 +12,7 @@ function makeWine(overrides: Partial<WineEntry> = {}): WineEntry {
 		vintage: 2021,
 		bottles: 6,
 		notes: '',
+		country: '',
 		photoRef: '',
 		addedAt: '2025-01-01T00:00:00.000Z',
 		...overrides
@@ -59,6 +60,28 @@ describe('filterByProducer', () => {
 	it('returns all wines when producerKey is null', () => {
 		const result = filterByProducer(wines, null)
 		expect(result).toHaveLength(3)
+	})
+})
+
+describe('filterByCountry', () => {
+	const wines = [
+		makeWine({ country: 'Germany' }),
+		makeWine({ country: 'France' }),
+		makeWine({ country: 'Germany' })
+	]
+
+	it('returns only wines matching the country', () => {
+		const result = filterByCountry(wines, 'Germany')
+		expect(result).toHaveLength(2)
+		expect(result.every((w) => w.country === 'Germany')).toBe(true)
+	})
+
+	it('returns all wines when country is null', () => {
+		expect(filterByCountry(wines, null)).toHaveLength(3)
+	})
+
+	it('returns empty array when no wines match', () => {
+		expect(filterByCountry(wines, 'Italy')).toHaveLength(0)
 	})
 })
 

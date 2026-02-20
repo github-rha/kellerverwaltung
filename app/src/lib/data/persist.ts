@@ -15,8 +15,12 @@ export async function saveCellar(cellar: Cellar): Promise<void> {
 
 export async function loadCellar(): Promise<Cellar> {
 	const data = await get<Cellar>(DB_KEY)
-	if (data) return data
-	return { schemaVersion: 1, wines: [] }
+	if (!data) return { schemaVersion: 1, wines: [] }
+	for (const w of data.wines) {
+		const entry = w as unknown as Record<string, unknown>
+		if (!('country' in entry)) entry.country = ''
+	}
+	return data
 }
 
 export async function loadSyncState(): Promise<void> {

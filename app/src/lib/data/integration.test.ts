@@ -17,7 +17,8 @@ const sampleInput: CreateWineInput = {
 	name: 'Riesling Trocken',
 	vintage: 2021,
 	bottles: 6,
-	notes: ''
+	notes: '',
+	country: ''
 }
 
 beforeEach(async () => {

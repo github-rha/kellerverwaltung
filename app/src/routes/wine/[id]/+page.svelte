@@ -50,6 +50,7 @@
 	let editVintage = $state('')
 	let editBottles = $state(0)
 	let editNotes = $state('')
+	let editCountry = $state('')
 
 	function startEdit() {
 		if (!wine) return
@@ -59,6 +60,7 @@
 		editVintage = wine.vintage === 'NV' ? 'NV' : String(wine.vintage)
 		editBottles = wine.bottles
 		editNotes = wine.notes
+		editCountry = wine.country
 		mode = 'edit'
 	}
 
@@ -79,7 +81,8 @@
 				name: editName.trim(),
 				vintage: parseVintage(editVintage),
 				bottles: editBottles,
-				notes: editNotes.trim()
+				notes: editNotes.trim(),
+				country: editCountry.trim()
 			})
 			mode = 'view'
 		} catch (e) {
@@ -125,7 +128,9 @@
 		<div class="px-4 py-4 space-y-4">
 			<div>
 				<h1 class="text-2xl font-bold text-gray-900">{wine.name}</h1>
-				<p class="text-gray-500">{wine.producer} &middot; {wine.vintage}</p>
+				<p class="text-gray-500">
+					{wine.producer} &middot; {wine.vintage}{wine.country ? ` · ${wine.country}` : ''}
+				</p>
 				<span
 					class="mt-1 inline-block rounded-full px-2 py-0.5 text-xs font-medium
 						{wine.type === 'red' ? 'bg-red-100 text-red-800' : ''}
@@ -199,6 +204,7 @@
 			bind:vintage={editVintage}
 			bind:bottles={editBottles}
 			bind:notes={editNotes}
+			bind:country={editCountry}
 			onsubmit={handleSave}
 			oncancel={() => {
 				mode = 'view'

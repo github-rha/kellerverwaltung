@@ -8,6 +8,7 @@ export interface ImportEntry {
 	vintage: number | 'NV'
 	bottles: number
 	notes: string
+	country: string
 	producerKey: string
 }
 
@@ -109,6 +110,7 @@ export function parseCSV(text: string): ParsedRow[] {
 
 	const idx = (col: string) => headers.indexOf(col)
 	const notesIdx = idx('notes')
+	const countryIdx = idx('country')
 
 	const results: ParsedRow[] = []
 
@@ -160,6 +162,7 @@ export function parseCSV(text: string): ParsedRow[] {
 		const bottles = parseInt(bottlesRaw, 10)
 
 		const notes = notesIdx >= 0 ? (fields[notesIdx] ?? '').trim() : ''
+		const country = countryIdx >= 0 ? (fields[countryIdx] ?? '').trim() : ''
 
 		results.push({
 			rowNumber,
@@ -171,6 +174,7 @@ export function parseCSV(text: string): ParsedRow[] {
 				vintage,
 				bottles,
 				notes,
+				country,
 				producerKey: producerKey(producer)
 			}
 		})

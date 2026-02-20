@@ -45,6 +45,7 @@ export interface CreateWineInput {
 	vintage: number | 'NV'
 	bottles: number
 	notes: string
+	country: string
 }
 
 export async function createWine(input: CreateWineInput): Promise<WineEntry> {
@@ -57,6 +58,7 @@ export async function createWine(input: CreateWineInput): Promise<WineEntry> {
 		vintage: input.vintage,
 		bottles: Math.max(0, input.bottles),
 		notes: input.notes,
+		country: input.country,
 		photoRef: '',
 		addedAt: new Date().toISOString()
 	}
@@ -160,6 +162,7 @@ export async function importWines(
 				vintage: entry.vintage,
 				bottles: entry.bottles,
 				notes: entry.notes,
+				country: entry.country,
 				photoRef: '',
 				addedAt: now
 			}

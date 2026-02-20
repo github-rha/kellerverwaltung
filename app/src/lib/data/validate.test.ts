@@ -15,6 +15,7 @@ function validCellar(overrides: Record<string, unknown> = {}): Cellar {
 				vintage: 2021,
 				bottles: 6,
 				notes: '',
+				country: '',
 				photoRef: 'photos/a1b2c3d4-e5f6-7890-abcd-ef1234567890.avif',
 				addedAt: '2025-01-01T00:00:00Z',
 				...overrides

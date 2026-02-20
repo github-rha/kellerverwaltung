@@ -5,7 +5,7 @@
 	import WineList from '$lib/components/WineList.svelte'
 	import { cellarStore, initStore } from '$lib/data/store'
 	import { unsyncedStore } from '$lib/data/persist'
-	import { filterByType, filterByProducer, sortWines } from '$lib/data/filter-sort'
+	import { filterByType, filterByProducer, filterByCountry, sortWines } from '$lib/data/filter-sort'
 	import type { SortOption } from '$lib/data/filter-sort'
 	import type { WineType } from '$lib/data/types'
 	import { isConfigured, loadSettings } from '$lib/data/settings'
@@ -16,6 +16,7 @@
 
 	let activeType: WineType | null = $state(null)
 	let activeProducer: string | null = $state(null)
+	let activeCountry: string | null = $state(null)
 	let activeSort: SortOption = $state('added-newest')
 
 	let showFilterMenu = $state(false)
@@ -46,6 +47,10 @@
 		if (producerParam) {
 			activeProducer = producerParam
 		}
+		const countryParam = params.get('country')
+		if (countryParam) {
+			activeCountry = countryParam
+		}
 		ready = true
 	})
 
@@ -53,10 +58,18 @@
 	let totalBottles = $derived(wines.reduce((sum, w) => sum + w.bottles, 0))
 
 	let displayedWines = $derived(
-		sortWines(filterByProducer(filterByType(wines, activeType), activeProducer), activeSort)
+		sortWines(
+			filterByCountry(
+				filterByProducer(filterByType(wines, activeType), activeProducer),
+				activeCountry
+			),
+			activeSort
+		)
 	)
 	let filteredBottles = $derived(displayedWines.reduce((sum, w) => sum + w.bottles, 0))
-	let isFiltered = $derived(activeType !== null || activeProducer !== null)
+	let isFiltered = $derived(
+		activeType !== null || activeProducer !== null || activeCountry !== null
+	)
 	let configured = $derived(isConfigured(settings))
 	let unsynced = $derived($unsyncedStore)
 
@@ -65,6 +78,8 @@
 			a[1].localeCompare(b[1])
 		)
 	)
+
+	let countries = $derived([...new Set(wines.map((w) => w.country).filter(Boolean))].sort())
 
 	let activeProducerName = $derived(
 		activeProducer
@@ -93,6 +108,11 @@
 
 	function setProducer(key: string | null) {
 		activeProducer = key
+		showFilterMenu = false
+	}
+
+	function setCountry(country: string | null) {
+		activeCountry = country
 		showFilterMenu = false
 	}
 
@@ -228,7 +248,7 @@
 						</div>
 						{#if producers.length > 0}
 							<div class="text-xs font-medium text-gray-500 mb-2">Producer</div>
-							<div class="flex flex-col gap-1 max-h-48 overflow-y-auto">
+							<div class="flex flex-col gap-1 max-h-32 overflow-y-auto mb-3">
 								{#each producers as [key, name] (key)}
 									<button
 										onclick={() => setProducer(activeProducer === key ? null : key)}
@@ -236,6 +256,20 @@
 											{activeProducer === key ? 'bg-red-800 text-white' : 'text-gray-700 hover:bg-gray-100'}"
 									>
 										{name}
+									</button>
+								{/each}
+							</div>
+						{/if}
+						{#if countries.length > 0}
+							<div class="text-xs font-medium text-gray-500 mb-2">Country</div>
+							<div class="flex flex-col gap-1 max-h-32 overflow-y-auto">
+								{#each countries as c (c)}
+									<button
+										onclick={() => setCountry(activeCountry === c ? null : c)}
+										class="text-left px-2.5 py-1.5 text-sm rounded-md
+											{activeCountry === c ? 'bg-red-800 text-white' : 'text-gray-700 hover:bg-gray-100'}"
+									>
+										{c}
 									</button>
 								{/each}
 							</div>
@@ -291,6 +325,16 @@
 						class="inline-flex items-center gap-1 px-2 py-0.5 text-xs font-medium rounded-full bg-red-100 text-red-800"
 					>
 						{activeProducerName} <span aria-label="Remove filter">&times;</span>
+					</button>
+				{/if}
+				{#if activeCountry}
+					<button
+						onclick={() => {
+							activeCountry = null
+						}}
+						class="inline-flex items-center gap-1 px-2 py-0.5 text-xs font-medium rounded-full bg-red-100 text-red-800"
+					>
+						{activeCountry} <span aria-label="Remove filter">&times;</span>
 					</button>
 				{/if}
 			</div>

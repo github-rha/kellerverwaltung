@@ -1,5 +1,6 @@
 <script lang="ts">
 	import type { WineType } from '$lib/data/types'
+	import { COUNTRIES } from '$lib/data/countries'
 
 	interface Props {
 		type: WineType
@@ -8,6 +9,7 @@
 		vintage: string
 		bottles: number
 		notes: string
+		country: string
 		onsubmit: () => void
 		oncancel: () => void
 		submitLabel: string
@@ -20,6 +22,7 @@
 		vintage = $bindable(),
 		bottles = $bindable(),
 		notes = $bindable(),
+		country = $bindable(),
 		onsubmit,
 		oncancel,
 		submitLabel
@@ -49,6 +52,20 @@
 		>
 			{#each wineTypes as wt (wt.value)}
 				<option value={wt.value}>{wt.label}</option>
+			{/each}
+		</select>
+	</div>
+
+	<div>
+		<label for="wine-country" class="block text-sm font-medium text-gray-700">Country</label>
+		<select
+			id="wine-country"
+			bind:value={country}
+			class="mt-1 block w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-gray-900"
+		>
+			<option value="">— Not specified —</option>
+			{#each COUNTRIES as c (c)}
+				<option value={c}>{c}</option>
 			{/each}
 		</select>
 	</div>

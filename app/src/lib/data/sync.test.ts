@@ -91,7 +91,8 @@ describe('push', () => {
 			name: 'Riesling',
 			vintage: 2020,
 			bottles: 3,
-			notes: ''
+			notes: '',
+			country: ''
 		})
 		await savePhoto(wine.id, fakePhotoBlob())
 		await updateWine(wine.id, { photoRef: `photos/${wine.id}.avif` })
@@ -126,7 +127,8 @@ describe('push', () => {
 			name: 'N',
 			vintage: 2021,
 			bottles: 1,
-			notes: ''
+			notes: '',
+			country: ''
 		})
 		expect(storeGet(unsyncedStore)).toBe(true)
 
@@ -154,7 +156,8 @@ describe('pull', () => {
 			name: 'N',
 			vintage: 2020,
 			bottles: 1,
-			notes: ''
+			notes: '',
+			country: ''
 		})
 		expect(storeGet(unsyncedStore)).toBe(true)
 
@@ -174,6 +177,7 @@ describe('pull', () => {
 					vintage: 2019,
 					bottles: 5,
 					notes: '',
+					country: '',
 					photoRef: '',
 					addedAt: '2025-01-01T00:00:00Z'
 				}
@@ -209,6 +213,7 @@ describe('pull', () => {
 					vintage: 2020,
 					bottles: 1,
 					notes: '',
+					country: '',
 					photoRef: `photos/${wineId}.avif`,
 					addedAt: '2025-01-01T00:00:00Z'
 				}
@@ -237,7 +242,8 @@ describe('pull', () => {
 			name: 'N',
 			vintage: 2020,
 			bottles: 1,
-			notes: ''
+			notes: '',
+			country: ''
 		})
 		await savePhoto(localWine.id, fakePhotoBlob())
 		await updateWine(localWine.id, { photoRef: `photos/${localWine.id}.avif` })
@@ -291,7 +297,8 @@ describe('forcePull', () => {
 			name: 'N',
 			vintage: 2020,
 			bottles: 1,
-			notes: ''
+			notes: '',
+			country: ''
 		})
 		expect(storeGet(unsyncedStore)).toBe(true)
 

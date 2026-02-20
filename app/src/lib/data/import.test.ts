@@ -11,6 +11,7 @@ function makeEntry(overrides: Partial<ImportEntry> = {}): ImportEntry {
 		vintage: 2021,
 		bottles: 6,
 		notes: '',
+		country: '',
 		producerKey: 'weingut-keller',
 		...overrides
 	}
@@ -58,7 +59,8 @@ describe('importWines', () => {
 			name: 'Riesling',
 			vintage: 2021,
 			bottles: 3,
-			notes: 'original'
+			notes: 'original',
+			country: ''
 		})
 		await importWines([makeEntry({ bottles: 99 })], 'skip')
 		const wines = getAllWines()
@@ -74,7 +76,8 @@ describe('importWines', () => {
 			name: 'Riesling',
 			vintage: 2021,
 			bottles: 3,
-			notes: 'original'
+			notes: 'original',
+			country: ''
 		})
 		await importWines([makeEntry({ bottles: 9, notes: 'updated' })], 'overwrite')
 		const wines = getAllWines()
@@ -93,7 +96,8 @@ describe('importWines', () => {
 			name: 'Riesling',
 			vintage: 2021,
 			bottles: 3,
-			notes: ''
+			notes: '',
+			country: ''
 		})
 		await importWines([makeEntry()], 'overwrite')
 		const updated = getAllWines()[0]
@@ -109,7 +113,8 @@ describe('importWines', () => {
 			name: 'Riesling',
 			vintage: 2021,
 			bottles: 3,
-			notes: ''
+			notes: '',
+			country: ''
 		})
 		const entries = [
 			makeEntry({ bottles: 99 }), // duplicate
@@ -131,7 +136,8 @@ describe('importWines', () => {
 			name: 'Riesling',
 			vintage: 2021,
 			bottles: 3,
-			notes: ''
+			notes: '',
+			country: ''
 		})
 		// Same wine but name in different case — still a duplicate
 		await importWines([makeEntry({ name: 'riesling', bottles: 99 })], 'skip')
@@ -146,7 +152,8 @@ describe('importWines', () => {
 			name: 'Riesling',
 			vintage: 2021,
 			bottles: 3,
-			notes: ''
+			notes: '',
+			country: ''
 		})
 		await importWines([makeEntry({ vintage: 2020 })], 'skip')
 		expect(getAllWines()).toHaveLength(2)

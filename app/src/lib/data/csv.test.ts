@@ -200,6 +200,28 @@ describe('parseCSV', () => {
 		expect(result[0].error).toContain('Invalid bottles')
 	})
 
+	it('uses empty string for country when country column is absent', () => {
+		const result = parseCSV(csv('Keller,Riesling,red,2021,6,'))
+		expect(result[0].valid).toBe(true)
+		expect(result[0].entry?.country).toBe('')
+	})
+
+	it('stores country value when country column is present', () => {
+		const result = parseCSV(
+			'producer,name,type,vintage,bottles,notes,country\nKeller,Riesling,red,2021,6,,Germany'
+		)
+		expect(result[0].valid).toBe(true)
+		expect(result[0].entry?.country).toBe('Germany')
+	})
+
+	it('uses empty string when country column is present but empty', () => {
+		const result = parseCSV(
+			'producer,name,type,vintage,bottles,notes,country\nKeller,Riesling,red,2021,6,,'
+		)
+		expect(result[0].valid).toBe(true)
+		expect(result[0].entry?.country).toBe('')
+	})
+
 	it('parses multiple rows independently', () => {
 		const result = parseCSV(
 			csv('Keller,Riesling,red,2021,6,', 'Schloss,Pinot,white,2019,3,Good', 'Bad,,red,2021,6,')

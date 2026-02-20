@@ -9,6 +9,7 @@ export interface WineEntry {
 	vintage: number | 'NV'
 	bottles: number
 	notes: string
+	country: string
 	photoRef: string
 	addedAt: string
 }

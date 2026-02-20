@@ -1,5 +1,16 @@
 # Changelog
 
+## v0.6.1 — Country field (2026-02-20)
+
+### Added
+
+- `country` field on every wine entry (string, defaults to `""`)
+- Country picker (fixed list of ~47 wine-producing countries) on add and edit forms
+- Country shown on wine detail view
+- Filter by country on dashboard
+- Optional `country` column in CSV import (absent or empty → `""`)
+- Migration: existing entries without `country` silently upgraded to `""`
+
 ## v0.6.0 — CSV import (2026-02-20)
 
 ### Added

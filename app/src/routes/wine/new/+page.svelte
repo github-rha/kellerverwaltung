@@ -13,6 +13,7 @@
 	let vintage = $state('')
 	let bottles = $state(1)
 	let notes = $state('')
+	let country = $state('')
 	let error = $state('')
 	let photoFile: File | null = $state(null)
 	let encoding = $state(false)
@@ -38,7 +39,8 @@
 				name: name.trim(),
 				vintage: parseVintage(vintage),
 				bottles,
-				notes: notes.trim()
+				notes: notes.trim(),
+				country: country.trim()
 			})
 
 			if (photoFile) {
@@ -111,6 +113,7 @@
 		bind:vintage
 		bind:bottles
 		bind:notes
+		bind:country
 		onsubmit={handleSubmit}
 		oncancel={() => goto(resolve('/'))}
 		submitLabel="Add Wine"

@@ -12,6 +12,11 @@ export function filterByProducer(wines: WineEntry[], producerKey: string | null)
 	return wines.filter((w) => w.producerKey === producerKey)
 }
 
+export function filterByCountry(wines: WineEntry[], country: string | null): WineEntry[] {
+	if (country === null) return wines
+	return wines.filter((w) => w.country === country)
+}
+
 function vintageNumeric(v: number | 'NV'): number {
 	return v === 'NV' ? 0 : v
 }
