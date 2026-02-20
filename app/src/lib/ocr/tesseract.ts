@@ -22,7 +22,7 @@ function getWorker(): Promise<Tesseract.Worker> {
 
 export async function runOcr(file: File): Promise<OcrResult> {
 	const worker = await getWorker()
-	const { data } = await worker.recognize(file)
+	const { data } = await worker.recognize(file, undefined, { blocks: true })
 	const words: OcrWord[] = []
 	for (const block of data.blocks ?? []) {
 		for (const para of block.paragraphs) {
