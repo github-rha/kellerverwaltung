@@ -51,6 +51,15 @@ Plan: `docs/plan/v0.5.0-ci-pipeline.md`
 - Preview import before committing (show count, flag validation errors per row)
 - Skip or overwrite duplicates (matched by producer + name + vintage)
 
+## v0.6.1 — Country field
+
+- Add `country` field to the wine data model and schema (string, defaults to `""`)
+- Fixed list of wine-producing countries (not free text)
+- Country picker on add-wine form and edit form
+- Country shown on wine detail view
+- Optional `country` column in CSV import (empty or absent → `""`)
+- Filter by country on dashboard
+
 ## v0.7.0 — OCR pre-fill
 
 - After taking a label photo on the add-wine form, run OCR to pre-fill producer,
