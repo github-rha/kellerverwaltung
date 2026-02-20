@@ -173,6 +173,13 @@
 					</svg>
 				</a>
 				<a
+					href={resolve('/import')}
+					class="flex items-center justify-center h-10 px-3 rounded-full border border-gray-300 text-sm font-medium text-gray-700"
+					aria-label="Import CSV"
+				>
+					Import
+				</a>
+				<a
 					href={resolve('/wine/new')}
 					class="flex items-center justify-center w-10 h-10 rounded-full bg-red-800 text-white text-2xl font-light"
 					aria-label="Add wine"

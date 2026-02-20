@@ -1,5 +1,14 @@
 # Changelog
 
+## v0.6.0 — CSV import (2026-02-20)
+
+### Added
+
+- Import wines from a CSV file (producer, name, type, vintage, bottles, notes)
+- Preview before committing: summary line, per-row error list with row number and reason
+- Skip or overwrite duplicates (matched by producer + name + vintage), global toggle
+- Import button on dashboard header
+
 ## v0.5.0 — CI pipeline (2026-02-20)
 
 ### Added

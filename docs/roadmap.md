@@ -45,7 +45,7 @@ Plan: `docs/plan/v0.4.0-github-sync.md`
 
 Plan: `docs/plan/v0.5.0-ci-pipeline.md`
 
-## v0.6.0 — CSV import
+## v0.6.0 — CSV import ✓
 
 - Import wines from a CSV file (producer, name, type, vintage, bottles, notes)
 - Preview import before committing (show count, flag validation errors per row)

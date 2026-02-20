@@ -3,6 +3,7 @@ import { deletePhoto, loadCellar, loadSyncState, saveCellar } from './persist'
 import { producerKey } from './producer-key'
 import type { Cellar, WineEntry, WineType } from './types'
 import { validate } from './validate'
+import type { ImportEntry } from './csv'
 
 function uuid(): string {
 	if (typeof crypto !== 'undefined' && crypto.randomUUID) {
@@ -119,4 +120,54 @@ export function getAllWines(): WineEntry[] {
 
 export function getTotalBottles(): number {
 	return cellar.wines.reduce((sum, w) => sum + w.bottles, 0)
+}
+
+function dupKey(pKey: string, name: string, vintage: number | 'NV'): string {
+	return `${pKey}::${name.toLowerCase().trim()}::${vintage}`
+}
+
+export async function importWines(
+	entries: ImportEntry[],
+	duplicateMode: 'skip' | 'overwrite'
+): Promise<void> {
+	if (entries.length === 0) return
+
+	const now = new Date().toISOString()
+
+	const existingIndex = new Map<string, number>()
+	for (let i = 0; i < cellar.wines.length; i++) {
+		const w = cellar.wines[i]
+		existingIndex.set(dupKey(w.producerKey, w.name, w.vintage), i)
+	}
+
+	const wines = [...cellar.wines]
+
+	for (const entry of entries) {
+		const key = dupKey(entry.producerKey, entry.name, entry.vintage)
+		const idx = existingIndex.get(key)
+
+		if (idx !== undefined) {
+			if (duplicateMode === 'overwrite') {
+				wines[idx] = { ...wines[idx], bottles: entry.bottles, notes: entry.notes }
+			}
+		} else {
+			const wine: WineEntry = {
+				id: uuid(),
+				type: entry.type,
+				producer: entry.producer,
+				producerKey: entry.producerKey,
+				name: entry.name,
+				vintage: entry.vintage,
+				bottles: entry.bottles,
+				notes: entry.notes,
+				photoRef: '',
+				addedAt: now
+			}
+			wines.push(wine)
+			existingIndex.set(key, wines.length - 1)
+		}
+	}
+
+	cellar = { ...cellar, wines }
+	await persist()
 }
