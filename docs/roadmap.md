@@ -36,12 +36,14 @@ Plan: `docs/plan/v0.3.0-photo-capture.md`
 
 Plan: `docs/plan/v0.4.0-github-sync.md`
 
-## v0.5.0 — CI pipeline
+## v0.5.0 — CI pipeline ✓
 
 - GitHub Actions: lint, type-check, schema validation
 - Unit + integration tests in CI
 - E2E tests via Playwright (WebKit)
 - Auto-deploy to GitHub Pages on push to main
+
+Plan: `docs/plan/v0.5.0-ci-pipeline.md`
 
 ## Future (unscheduled)
 

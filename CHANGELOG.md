@@ -1,5 +1,15 @@
 # Changelog
 
+## v0.5.0 — CI pipeline (2026-02-20)
+
+### Added
+
+- GitHub Actions workflow: lint, type-check, schema validation, unit/integration tests, build, E2E tests, deploy
+- Auto-deploy to GitHub Pages (kellerverwaltung.haeusler-wein.ch) on push to main
+- Playwright WebKit smoke tests (4 tests covering dashboard, add wine, count adjustment, edit)
+- Schema validation script against example fixtures
+- CNAME file for custom domain
+
 ## v0.4.0 — GitHub sync (2026-02-20)
 
 ### Added
