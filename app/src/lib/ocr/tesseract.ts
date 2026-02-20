@@ -20,22 +20,33 @@ function getWorker(): Promise<Tesseract.Worker> {
 	return workerPromise
 }
 
+function parseTsv(tsv: string): OcrWord[] {
+	const words: OcrWord[] = []
+	for (const line of tsv.split('\n')) {
+		const cols = line.split('\t')
+		if (cols.length < 12) continue
+		if (parseInt(cols[0]) !== 5) continue // level 5 = word
+		const conf = parseFloat(cols[10])
+		const text = cols[11]?.trim()
+		if (!text || conf < 0) continue // skip spaces (conf === -1)
+		const left = parseInt(cols[6])
+		const top = parseInt(cols[7])
+		const width = parseInt(cols[8])
+		const height = parseInt(cols[9])
+		words.push({
+			text,
+			confidence: conf,
+			bbox: { x0: left, y0: top, x1: left + width, y1: top + height }
+		})
+	}
+	return words
+}
+
 export async function runOcr(file: File): Promise<OcrResult> {
 	const worker = await getWorker()
-	const { data } = await worker.recognize(file, undefined, { blocks: true })
-	const words: OcrWord[] = []
-	for (const block of data.blocks ?? []) {
-		for (const para of block.paragraphs) {
-			for (const line of para.lines) {
-				for (const word of line.words) {
-					words.push({
-						text: word.text,
-						confidence: word.confidence,
-						bbox: { x0: word.bbox.x0, y0: word.bbox.y0, x1: word.bbox.x1, y1: word.bbox.y1 }
-					})
-				}
-			}
-		}
+	const { data } = await worker.recognize(file, undefined, { text: true, tsv: true })
+	return {
+		text: data.text ?? '',
+		words: parseTsv(data.tsv ?? '')
 	}
-	return { text: data.text, words }
 }
