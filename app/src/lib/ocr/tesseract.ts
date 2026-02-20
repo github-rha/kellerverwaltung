@@ -28,7 +28,7 @@ function parseTsv(tsv: string): OcrWord[] {
 		if (parseInt(cols[0]) !== 5) continue // level 5 = word
 		const conf = parseFloat(cols[10])
 		const text = cols[11]?.trim()
-		if (!text || conf < 0) continue // skip spaces (conf === -1)
+		if (!text || conf < 60) continue // skip low-confidence and spaces (conf === -1)
 		const left = parseInt(cols[6])
 		const top = parseInt(cols[7])
 		const width = parseInt(cols[8])
