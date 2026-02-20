@@ -101,7 +101,7 @@
 				await appendOcrEntry({
 					wineId: wine.id,
 					capturedAt: new Date().toISOString(),
-					ocr: ocrResult,
+					ocr: $state.snapshot(ocrResult),
 					corrected: {
 						producer: producer.trim(),
 						name: name.trim(),
