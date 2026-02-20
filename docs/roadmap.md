@@ -77,3 +77,6 @@ Plan: `docs/plan/v0.5.0-ci-pipeline.md`
 - On-device ML model for label recognition
 - Auto-push on visibility change
 - JSON export/import for backup without GitHub
+- Bottle history: record every bottle count change (timestamp, delta, source) per
+  wine entry; show a timeline on the wine detail view (e.g. "+1 · 3 Feb 2026",
+  "−2 · 12 Jan 2026"); history stored in IndexedDB and synced to GitHub
