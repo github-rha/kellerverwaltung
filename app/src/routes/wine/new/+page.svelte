@@ -22,7 +22,7 @@
 	let encoding = $state(false)
 	let ocrRunning = $state(false)
 	let ocrNote = $state('')
-	let ocrResult: OcrResult | null = $state(null)
+	let ocrResult: OcrResult | null = null
 
 	function parseVintage(v: string): number | 'NV' {
 		if (v.trim().toUpperCase() === 'NV') return 'NV'
@@ -101,7 +101,7 @@
 				await appendOcrEntry({
 					wineId: wine.id,
 					capturedAt: new Date().toISOString(),
-					ocr: $state.snapshot(ocrResult),
+					ocr: ocrResult,
 					corrected: {
 						producer: producer.trim(),
 						name: name.trim(),
