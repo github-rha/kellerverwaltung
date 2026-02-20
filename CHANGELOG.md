@@ -1,5 +1,17 @@
 # Changelog
 
+## v0.4.0 — GitHub sync (2026-02-20)
+
+### Added
+
+- Settings view (gear icon on dashboard) for GitHub repository and PAT configuration
+- Manual push to private GitHub repo — uploads cellar.json and all AVIF photos
+- Manual pull from GitHub repo — downloads and applies remote cellar and photos
+- Force-pull with confirmation — discards local changes and overwrites from GitHub
+- Unsynced-changes indicator on dashboard (tracked persistently in IndexedDB)
+- Pull blocked when local changes exist; force-pull escape hatch shown inline
+- Push and pull disabled when offline
+
 ## v0.3.0 — Photo capture (2026-02-17)
 
 ### Added

@@ -1,5 +1,5 @@
 import { writable } from 'svelte/store'
-import { deletePhoto, loadCellar, saveCellar } from './persist'
+import { deletePhoto, loadCellar, loadSyncState, saveCellar } from './persist'
 import { producerKey } from './producer-key'
 import type { Cellar, WineEntry, WineType } from './types'
 import { validate } from './validate'
@@ -18,6 +18,12 @@ let cellar: Cellar = { schemaVersion: 1, wines: [] }
 export const cellarStore = writable<Cellar>(cellar)
 
 export async function initStore(): Promise<void> {
+	cellar = await loadCellar()
+	cellarStore.set(cellar)
+	await loadSyncState()
+}
+
+export async function reloadStore(): Promise<void> {
 	cellar = await loadCellar()
 	cellarStore.set(cellar)
 }

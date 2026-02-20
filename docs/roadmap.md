@@ -5,7 +5,7 @@
 Add wines, browse them, adjust bottle counts. Data persists locally.
 Installable PWA, works offline.
 
-Plan: `docs/plan/20260216-initial-version.md`
+Plan: `docs/plan/v0.1.0-initial-version.md`
 
 ## v0.2.0 — Filter, sort, and producer grouping ✓
 
@@ -14,7 +14,7 @@ Plan: `docs/plan/20260216-initial-version.md`
 - Sort by vintage or date added
 - "More from this producer" button on wine detail
 
-Plan: `docs/plan/20260216-filter-sort-producer-grouping.md`
+Plan: `docs/plan/v0.2.0-filter-sort-producer-grouping.md`
 
 ## v0.3.0 — Photo capture ✓
 
@@ -23,9 +23,9 @@ Plan: `docs/plan/20260216-filter-sort-producer-grouping.md`
 - Display photo on wine detail view
 - Photo cleaned up when wine is deleted
 
-Plan: `docs/plan/20260217-photo-capture.md`
+Plan: `docs/plan/v0.3.0-photo-capture.md`
 
-## v0.4.0 — GitHub sync
+## v0.4.0 — GitHub sync ✓
 
 - Settings view (repo, PAT)
 - Manual push to private GitHub repo
@@ -33,6 +33,8 @@ Plan: `docs/plan/20260217-photo-capture.md`
 - Force-pull with confirmation
 - Sync status indicator on dashboard
 - "Set up sync" prompt when unconfigured
+
+Plan: `docs/plan/v0.4.0-github-sync.md`
 
 ## v0.5.0 — CI pipeline
 

@@ -4,9 +4,13 @@
 	import { resolve } from '$app/paths'
 	import WineList from '$lib/components/WineList.svelte'
 	import { cellarStore, initStore } from '$lib/data/store'
+	import { unsyncedStore } from '$lib/data/persist'
 	import { filterByType, filterByProducer, sortWines } from '$lib/data/filter-sort'
 	import type { SortOption } from '$lib/data/filter-sort'
 	import type { WineType } from '$lib/data/types'
+	import { isConfigured, loadSettings } from '$lib/data/settings'
+	import type { SyncSettings } from '$lib/data/settings'
+	import { SyncError, push, pull, forcePull } from '$lib/data/sync'
 
 	let ready = $state(false)
 
@@ -17,8 +21,22 @@
 	let showFilterMenu = $state(false)
 	let showSortMenu = $state(false)
 
+	let settings: SyncSettings = $state({ repo: '', pat: '' })
+	let online = $state(true)
+	let syncing: 'idle' | 'pushing' | 'pulling' = $state('idle')
+	let syncErrorMsg: string | null = $state(null)
+	let pullBlocked = $state(false)
+
 	onMount(async () => {
 		await initStore()
+		settings = await loadSettings()
+		online = navigator.onLine
+		window.addEventListener('online', () => {
+			online = true
+		})
+		window.addEventListener('offline', () => {
+			online = false
+		})
 		const params = $page.url.searchParams
 		const typeParam = params.get('type')
 		if (typeParam && ['red', 'white', 'sparkling', 'dessert'].includes(typeParam)) {
@@ -39,6 +57,8 @@
 	)
 	let filteredBottles = $derived(displayedWines.reduce((sum, w) => sum + w.bottles, 0))
 	let isFiltered = $derived(activeType !== null || activeProducer !== null)
+	let configured = $derived(isConfigured(settings))
+	let unsynced = $derived($unsyncedStore)
 
 	let producers = $derived(
 		[...new Map(wines.map((w) => [w.producerKey, w.producer]))].sort((a, b) =>
@@ -80,19 +100,86 @@
 		activeSort = sort
 		showSortMenu = false
 	}
+
+	async function handlePush() {
+		syncErrorMsg = null
+		pullBlocked = false
+		syncing = 'pushing'
+		try {
+			await push(settings)
+		} catch (e) {
+			syncErrorMsg = e instanceof Error ? e.message : 'Push failed'
+		} finally {
+			syncing = 'idle'
+		}
+	}
+
+	async function handlePull() {
+		syncErrorMsg = null
+		pullBlocked = false
+		syncing = 'pulling'
+		try {
+			await pull(settings)
+		} catch (e) {
+			if (e instanceof SyncError && e.message === 'unsynced') {
+				pullBlocked = true
+			} else {
+				syncErrorMsg = e instanceof Error ? e.message : 'Pull failed'
+			}
+		} finally {
+			syncing = 'idle'
+		}
+	}
+
+	async function handleForcePull() {
+		if (!confirm('This will discard all local changes. Continue?')) return
+		syncErrorMsg = null
+		pullBlocked = false
+		syncing = 'pulling'
+		try {
+			await forcePull(settings)
+		} catch (e) {
+			syncErrorMsg = e instanceof Error ? e.message : 'Pull failed'
+		} finally {
+			syncing = 'idle'
+		}
+	}
 </script>
 
 <div class="min-h-screen bg-gray-50">
 	<header class="bg-white border-b border-gray-200 px-4 py-3">
 		<div class="flex items-center justify-between">
 			<h1 class="text-xl font-bold text-gray-900">Kellerverwaltung</h1>
-			<a
-				href={resolve('/wine/new')}
-				class="flex items-center justify-center w-10 h-10 rounded-full bg-red-800 text-white text-2xl font-light"
-				aria-label="Add wine"
-			>
-				+
-			</a>
+			<div class="flex items-center gap-2">
+				<a
+					href={resolve('/settings')}
+					class="flex items-center justify-center w-10 h-10 text-gray-400"
+					aria-label="Settings"
+				>
+					<svg
+						xmlns="http://www.w3.org/2000/svg"
+						viewBox="0 0 24 24"
+						fill="none"
+						stroke="currentColor"
+						stroke-width="2"
+						stroke-linecap="round"
+						stroke-linejoin="round"
+						class="w-5 h-5"
+					>
+						<circle cx="12" cy="12" r="3"></circle>
+						<path
+							d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"
+						></path>
+					</svg>
+				</a>
+				<a
+					href={resolve('/wine/new')}
+					class="flex items-center justify-center w-10 h-10 rounded-full bg-red-800 text-white text-2xl font-light"
+					aria-label="Add wine"
+				>
+					+
+				</a>
+			</div>
 		</div>
 		<div class="mt-2 text-sm text-gray-500">
 			{#if isFiltered}
@@ -202,6 +289,59 @@
 			</div>
 		{/if}
 	</div>
+
+	<!-- Sync bar -->
+	{#if ready}
+		<div class="bg-white border-b border-gray-200 px-4 py-2">
+			{#if !configured}
+				<a href={resolve('/settings')} class="text-sm text-red-800 font-medium">
+					Set up sync &rarr;
+				</a>
+			{:else}
+				<div class="flex items-center gap-3">
+					<button
+						onclick={handlePush}
+						disabled={!online || syncing !== 'idle'}
+						class="px-3 py-1.5 text-sm font-medium rounded-full border border-gray-300 text-gray-700
+							disabled:opacity-40"
+					>
+						{syncing === 'pushing' ? 'Pushing…' : 'Push'}
+					</button>
+					<button
+						onclick={handlePull}
+						disabled={!online || syncing !== 'idle'}
+						class="px-3 py-1.5 text-sm font-medium rounded-full border border-gray-300 text-gray-700
+							disabled:opacity-40"
+					>
+						{syncing === 'pulling' ? 'Pulling…' : 'Pull'}
+					</button>
+					<span class="text-xs {unsynced ? 'text-amber-600' : 'text-gray-400'}">
+						{unsynced ? '● unsynced' : '● synced'}
+					</span>
+				</div>
+
+				{#if pullBlocked}
+					<div class="mt-2 text-sm text-amber-700">
+						Unsynced changes. Push first, or
+						<button
+							onclick={handleForcePull}
+							disabled={!online || syncing !== 'idle'}
+							class="underline font-medium disabled:opacity-40"
+						>
+							force-pull
+						</button>
+						to discard local changes.
+					</div>
+				{/if}
+
+				{#if syncErrorMsg}
+					<div class="mt-2 text-sm text-red-700">
+						{syncErrorMsg}
+					</div>
+				{/if}
+			{/if}
+		</div>
+	{/if}
 
 	<main>
 		{#if ready}
