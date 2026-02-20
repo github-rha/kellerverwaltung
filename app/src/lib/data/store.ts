@@ -1,5 +1,6 @@
 import { writable } from 'svelte/store'
 import { deletePhoto, loadCellar, loadSyncState, saveCellar } from './persist'
+import { removeOcrEntry } from './ocr-store'
 import { producerKey } from './producer-key'
 import type { Cellar, WineEntry, WineType } from './types'
 import { validate } from './validate'
@@ -95,6 +96,7 @@ export async function deleteWine(id: string): Promise<void> {
 	if (wine?.photoRef) {
 		await deletePhoto(id)
 	}
+	await removeOcrEntry(id)
 	cellar = { ...cellar, wines: cellar.wines.filter((w) => w.id !== id) }
 	await persist()
 }

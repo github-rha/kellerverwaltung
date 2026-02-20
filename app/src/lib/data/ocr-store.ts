@@ -29,3 +29,11 @@ export async function appendOcrEntry(entry: OcrEntry): Promise<void> {
 export async function saveOcrData(data: OcrTrainingData): Promise<void> {
 	await set(DB_KEY, data)
 }
+
+export async function removeOcrEntry(wineId: string): Promise<void> {
+	const data = await loadOcrData()
+	const filtered = data.entries.filter((e) => e.wineId !== wineId)
+	if (filtered.length !== data.entries.length) {
+		await set(DB_KEY, { ...data, entries: filtered })
+	}
+}

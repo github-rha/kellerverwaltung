@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it } from 'vitest'
 import { clear } from 'idb-keyval'
-import { appendOcrEntry, loadOcrData } from './ocr-store'
+import { appendOcrEntry, loadOcrData, removeOcrEntry } from './ocr-store'
 import type { OcrEntry } from './ocr-store'
 
 beforeEach(async () => {
@@ -23,6 +23,26 @@ describe('loadOcrData', () => {
 	it('returns empty training data when nothing is stored', async () => {
 		const data = await loadOcrData()
 		expect(data).toEqual({ version: 1, entries: [] })
+	})
+})
+
+describe('removeOcrEntry', () => {
+	it('removes the entry for the given wineId', async () => {
+		await appendOcrEntry(makeEntry('wine-1'))
+		await appendOcrEntry(makeEntry('wine-2'))
+
+		await removeOcrEntry('wine-1')
+
+		const data = await loadOcrData()
+		expect(data.entries).toHaveLength(1)
+		expect(data.entries[0].wineId).toBe('wine-2')
+	})
+
+	it('is a no-op when the wineId has no OCR entry', async () => {
+		await appendOcrEntry(makeEntry('wine-1'))
+		await removeOcrEntry('wine-999')
+		const data = await loadOcrData()
+		expect(data.entries).toHaveLength(1)
 	})
 })
 
