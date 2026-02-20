@@ -154,7 +154,7 @@ async function _pull(settings: SyncSettings): Promise<void> {
 		const photoMeta = await getFileMeta(settings.repo, settings.pat, `data/photos/${wine.id}.avif`)
 		if (!photoMeta) continue
 		const photoBytes = decodeBase64ToBytes(photoMeta.content)
-		await savePhotoBuffer(wine.id, photoBytes.buffer)
+		await savePhotoBuffer(wine.id, photoBytes.buffer as ArrayBuffer)
 	}
 
 	const remotePhotoIds = new Set(cellar.wines.filter((w) => w.photoRef).map((w) => w.id))
