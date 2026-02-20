@@ -1,7 +1,7 @@
 {
 	"name": "kellerverwaltung",
 	"private": true,
-	"version": "0.6.1",
+	"version": "0.7.0",
 	"type": "module",
 	"scripts": {
 		"dev": "vite dev",
@@ -21,7 +21,8 @@
 		"@jsquash/avif": "^2.1.1",
 		"ajv": "^8.17.0",
 		"ajv-formats": "^3.0.0",
-		"idb-keyval": "^6.2.0"
+		"idb-keyval": "^6.2.0",
+		"tesseract.js": "^7.0.0"
 	},
 	"devDependencies": {
 		"@playwright/test": "^1.58.2",

@@ -10,6 +10,8 @@ import {
 } from './persist'
 import { reloadStore } from './store'
 import { validate } from './validate'
+import { loadOcrData, saveOcrData } from './ocr-store'
+import type { OcrTrainingData } from './ocr-store'
 import type { SyncSettings } from './settings'
 import type { Cellar } from './types'
 
@@ -126,6 +128,20 @@ export async function push(settings: SyncSettings): Promise<void> {
 		'sync: update cellar.json'
 	)
 
+	const ocrData = await loadOcrData()
+	if (ocrData.entries.length > 0) {
+		const ocrJson = JSON.stringify(ocrData, null, 2)
+		const ocrMeta = await getFileMeta(settings.repo, settings.pat, 'data/ocr-training.json')
+		await putFile(
+			settings.repo,
+			settings.pat,
+			'data/ocr-training.json',
+			encodeText(ocrJson),
+			ocrMeta?.sha ?? null,
+			'sync: update ocr-training.json'
+		)
+	}
+
 	await markSynced()
 }
 
@@ -162,6 +178,14 @@ async function _pull(settings: SyncSettings): Promise<void> {
 		if (wine.photoRef && !remotePhotoIds.has(wine.id)) {
 			await deletePhoto(wine.id)
 		}
+	}
+
+	const ocrMeta = await getFileMeta(settings.repo, settings.pat, 'data/ocr-training.json')
+	if (ocrMeta) {
+		const ocrBytes = decodeBase64ToBytes(ocrMeta.content)
+		const ocrJson = new TextDecoder().decode(ocrBytes)
+		const ocrData = JSON.parse(ocrJson) as OcrTrainingData
+		await saveOcrData(ocrData)
 	}
 
 	await saveCellar(cellar)

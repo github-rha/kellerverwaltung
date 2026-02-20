@@ -5,6 +5,9 @@
 	import { createWine, updateWine } from '$lib/data/store'
 	import { savePhoto } from '$lib/data/persist'
 	import { encodePhoto } from '$lib/photo/encode'
+	import { runOcr } from '$lib/ocr/tesseract'
+	import { appendOcrEntry } from '$lib/data/ocr-store'
+	import type { OcrResult } from '$lib/ocr/tesseract'
 	import type { WineType } from '$lib/data/types'
 
 	let type: WineType = $state('red')
@@ -17,6 +20,9 @@
 	let error = $state('')
 	let photoFile: File | null = $state(null)
 	let encoding = $state(false)
+	let ocrRunning = $state(false)
+	let ocrNote = $state('')
+	let ocrResult: OcrResult | null = $state(null)
 
 	function parseVintage(v: string): number | 'NV' {
 		if (v.trim().toUpperCase() === 'NV') return 'NV'
@@ -25,9 +31,46 @@
 		return n
 	}
 
+	function extractPreFill(text: string): { producer: string; name: string; vintage: string } {
+		const lines = text
+			.split('\n')
+			.map((l) => l.trim())
+			.filter(Boolean)
+		const producerLine = lines[0] ?? ''
+		const nameLine = lines[1] ?? ''
+		const vintageMatch = text.match(/\b(\d{4})\b/g)
+		const vintageYear = vintageMatch?.map(Number).find((n) => n >= 1800 && n <= 2100)
+		return {
+			producer: producerLine,
+			name: nameLine,
+			vintage: vintageYear ? String(vintageYear) : ''
+		}
+	}
+
 	function handlePhotoSelect(e: Event) {
 		const input = e.target as HTMLInputElement
 		photoFile = input.files?.[0] ?? null
+		if (!photoFile) return
+
+		ocrRunning = true
+		ocrNote = ''
+		ocrResult = null
+
+		runOcr(photoFile)
+			.then((result) => {
+				ocrResult = result
+				const pre = extractPreFill(result.text)
+				if (!producer && pre.producer) producer = pre.producer
+				if (!name && pre.name) name = pre.name
+				if (!vintage && pre.vintage) vintage = pre.vintage
+				ocrNote = 'Label read — review fields below.'
+			})
+			.catch(() => {
+				// silent fallback — fields remain editable
+			})
+			.finally(() => {
+				ocrRunning = false
+			})
 	}
 
 	async function handleSubmit() {
@@ -52,6 +95,21 @@
 				} finally {
 					encoding = false
 				}
+			}
+
+			if (ocrResult) {
+				await appendOcrEntry({
+					wineId: wine.id,
+					capturedAt: new Date().toISOString(),
+					ocr: ocrResult,
+					corrected: {
+						producer: producer.trim(),
+						name: name.trim(),
+						vintage: vintage.trim()
+					}
+				}).catch(() => {
+					// non-critical — ignore storage errors
+				})
 			}
 
 			goto(resolve('/'))
@@ -88,6 +146,25 @@
 				</svg>
 				Encoding photo…
 			</div>
+		{/if}
+
+		{#if ocrRunning}
+			<div class="flex items-center gap-2 text-sm text-gray-500 mb-3">
+				<svg class="animate-spin h-4 w-4" viewBox="0 0 24 24" fill="none">
+					<circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"
+					></circle>
+					<path
+						class="opacity-75"
+						fill="currentColor"
+						d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+					></path>
+				</svg>
+				Reading label…
+			</div>
+		{/if}
+
+		{#if ocrNote && !ocrRunning}
+			<div class="text-sm text-gray-500 mb-3">{ocrNote}</div>
 		{/if}
 
 		<label class="block">

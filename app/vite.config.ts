@@ -7,6 +7,9 @@ export default defineConfig({
 	worker: {
 		format: 'es'
 	},
+	optimizeDeps: {
+		exclude: ['tesseract.js']
+	},
 	plugins: [
 		tailwindcss(),
 		sveltekit(),

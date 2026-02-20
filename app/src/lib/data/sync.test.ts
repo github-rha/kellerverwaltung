@@ -184,12 +184,14 @@ describe('pull', () => {
 			]
 		}
 
-		mockFetch.mockResolvedValueOnce(
-			jsonResponse({
-				sha: 'abc',
-				content: textToBase64(JSON.stringify(remoteCellar))
-			})
-		)
+		mockFetch
+			.mockResolvedValueOnce(
+				jsonResponse({
+					sha: 'abc',
+					content: textToBase64(JSON.stringify(remoteCellar))
+				})
+			)
+			.mockResolvedValueOnce(notFound()) // GET ocr-training.json
 
 		await pull(settings)
 
@@ -227,6 +229,7 @@ describe('pull', () => {
 			.mockResolvedValueOnce(
 				jsonResponse({ sha: 'sha2', content: bufferToBase64(photoBytes.buffer) })
 			)
+			.mockResolvedValueOnce(notFound()) // GET ocr-training.json
 
 		await pull(settings)
 
@@ -249,9 +252,11 @@ describe('pull', () => {
 		await updateWine(localWine.id, { photoRef: `photos/${localWine.id}.avif` })
 
 		// Remote cellar has no wines (and thus no photos)
-		mockFetch.mockResolvedValueOnce(
-			jsonResponse({ sha: 'sha1', content: textToBase64(JSON.stringify(emptyCellar)) })
-		)
+		mockFetch
+			.mockResolvedValueOnce(
+				jsonResponse({ sha: 'sha1', content: textToBase64(JSON.stringify(emptyCellar)) })
+			)
+			.mockResolvedValueOnce(notFound()) // GET ocr-training.json
 
 		// Need to manually markSynced so pull isn't blocked
 		const { markSynced } = await import('./persist')
@@ -279,9 +284,11 @@ describe('pull', () => {
 	})
 
 	it('sets unsyncedStore to false after successful pull', async () => {
-		mockFetch.mockResolvedValueOnce(
-			jsonResponse({ sha: 'sha1', content: textToBase64(JSON.stringify(emptyCellar)) })
-		)
+		mockFetch
+			.mockResolvedValueOnce(
+				jsonResponse({ sha: 'sha1', content: textToBase64(JSON.stringify(emptyCellar)) })
+			)
+			.mockResolvedValueOnce(notFound()) // GET ocr-training.json
 
 		await pull(settings)
 
@@ -302,9 +309,11 @@ describe('forcePull', () => {
 		})
 		expect(storeGet(unsyncedStore)).toBe(true)
 
-		mockFetch.mockResolvedValueOnce(
-			jsonResponse({ sha: 'sha1', content: textToBase64(JSON.stringify(emptyCellar)) })
-		)
+		mockFetch
+			.mockResolvedValueOnce(
+				jsonResponse({ sha: 'sha1', content: textToBase64(JSON.stringify(emptyCellar)) })
+			)
+			.mockResolvedValueOnce(notFound()) // GET ocr-training.json
 
 		await expect(forcePull(settings)).resolves.toBeUndefined()
 
