@@ -45,9 +45,26 @@ Plan: `docs/plan/v0.4.0-github-sync.md`
 
 Plan: `docs/plan/v0.5.0-ci-pipeline.md`
 
+## v0.6.0 — CSV import
+
+- Import wines from a CSV file (producer, name, type, vintage, bottles, notes)
+- Preview import before committing (show count, flag validation errors per row)
+- Skip or overwrite duplicates (matched by producer + name + vintage)
+
+## v0.7.0 — OCR pre-fill
+
+- After taking a label photo on the add-wine form, run OCR to pre-fill producer,
+  name, and vintage
+- Store raw OCR output (text, per-word confidence and bounding boxes) + corrected
+  field values in `data/ocr-training.json` in the GitHub repo, linked to the
+  wine entry by ID — synced alongside cellar.json as training data for a future
+  model
+
 ## Future (unscheduled)
 
-- OCR pre-fill via Tesseract.js (photo → extract producer, name, vintage)
+- Onboarding: first-run screen when sync is unconfigured, with instructions for
+  "Add to Home Screen" in Safari and how to set up GitHub sync (create private
+  repo, generate fine-grained PAT, enter settings); shown once until dismissed
 - On-device ML model for label recognition
 - Auto-push on visibility change
 - JSON export/import for backup without GitHub
