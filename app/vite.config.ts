@@ -8,7 +8,7 @@ export default defineConfig({
 		format: 'es'
 	},
 	optimizeDeps: {
-		exclude: ['tesseract.js']
+		exclude: ['tesseract.js', '@huggingface/transformers']
 	},
 	plugins: [
 		tailwindcss(),
