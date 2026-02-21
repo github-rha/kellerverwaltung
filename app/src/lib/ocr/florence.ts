@@ -27,7 +27,7 @@ function getPipeline(): Promise<Pipeline> {
 	if (!pipelinePromise) {
 		pipelinePromise = Promise.all([
 			Florence2ForConditionalGeneration.from_pretrained(MODEL_ID, {
-				dtype: 'q8',
+				dtype: 'q4',
 				device: 'auto'
 			}),
 			AutoProcessor.from_pretrained(MODEL_ID) as Promise<Florence2Processor>,
