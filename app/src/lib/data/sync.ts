@@ -75,6 +75,24 @@ async function getFileMeta(repo: string, pat: string, path: string): Promise<Fil
 	return res.json() as Promise<FileMeta>
 }
 
+async function deleteFile(
+	repo: string,
+	pat: string,
+	path: string,
+	sha: string,
+	message: string
+): Promise<void> {
+	const res = await fetch(apiUrl(repo, path), {
+		method: 'DELETE',
+		headers: apiHeaders(pat),
+		body: JSON.stringify({ message, sha })
+	})
+	if (!res.ok) {
+		const text = await res.text()
+		throw new SyncError(`GitHub API error ${res.status}: ${text}`)
+	}
+}
+
 async function putFile(
 	repo: string,
 	pat: string,
@@ -129,9 +147,9 @@ export async function push(settings: SyncSettings): Promise<void> {
 	)
 
 	const ocrData = await loadOcrData()
+	const ocrMeta = await getFileMeta(settings.repo, settings.pat, 'data/ocr-training.json')
 	if (ocrData.entries.length > 0) {
 		const ocrJson = JSON.stringify(ocrData, null, 2)
-		const ocrMeta = await getFileMeta(settings.repo, settings.pat, 'data/ocr-training.json')
 		await putFile(
 			settings.repo,
 			settings.pat,
@@ -139,6 +157,14 @@ export async function push(settings: SyncSettings): Promise<void> {
 			encodeText(ocrJson),
 			ocrMeta?.sha ?? null,
 			'sync: update ocr-training.json'
+		)
+	} else if (ocrMeta) {
+		await deleteFile(
+			settings.repo,
+			settings.pat,
+			'data/ocr-training.json',
+			ocrMeta.sha,
+			'sync: remove ocr-training.json'
 		)
 	}
 

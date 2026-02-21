@@ -55,6 +55,7 @@ describe('push', () => {
 		mockFetch
 			.mockResolvedValueOnce(notFound()) // GET cellar.json → 404
 			.mockResolvedValueOnce(jsonResponse({}, 201)) // PUT cellar.json
+			.mockResolvedValueOnce(notFound()) // GET ocr-training.json → 404 (no OCR data, file absent)
 
 		await push(settings)
 
@@ -76,7 +77,8 @@ describe('push', () => {
 			.mockResolvedValueOnce(
 				jsonResponse({ sha: 'existing-sha', content: '' }) // GET → file exists
 			)
-			.mockResolvedValueOnce(jsonResponse({}, 200)) // PUT
+			.mockResolvedValueOnce(jsonResponse({}, 200)) // PUT cellar.json
+			.mockResolvedValueOnce(notFound()) // GET ocr-training.json → 404
 
 		await push(settings)
 
@@ -102,6 +104,7 @@ describe('push', () => {
 			.mockResolvedValueOnce(jsonResponse({}, 201)) // PUT photo
 			.mockResolvedValueOnce(notFound()) // GET cellar.json → 404
 			.mockResolvedValueOnce(jsonResponse({}, 201)) // PUT cellar.json
+			.mockResolvedValueOnce(notFound()) // GET ocr-training.json → 404
 
 		await push(settings)
 
@@ -135,10 +138,30 @@ describe('push', () => {
 		mockFetch
 			.mockResolvedValueOnce(notFound()) // GET cellar.json
 			.mockResolvedValueOnce(jsonResponse({}, 201)) // PUT cellar.json
+			.mockResolvedValueOnce(notFound()) // GET ocr-training.json → 404
 
 		await push(settings)
 
 		expect(storeGet(unsyncedStore)).toBe(false)
+	})
+
+	it('DELETEs ocr-training.json when local OCR data is empty and file exists on GitHub', async () => {
+		mockFetch
+			.mockResolvedValueOnce(notFound()) // GET cellar.json → 404
+			.mockResolvedValueOnce(jsonResponse({}, 201)) // PUT cellar.json
+			.mockResolvedValueOnce(jsonResponse({ sha: 'ocr-sha', content: '' })) // GET ocr-training.json → exists
+			.mockResolvedValueOnce(jsonResponse({}, 200)) // DELETE ocr-training.json
+
+		await push(settings)
+
+		const deleteCall = mockFetch.mock.calls[3]
+		expect(deleteCall[0]).toBe(
+			'https://api.github.com/repos/user/cellar/contents/data/ocr-training.json'
+		)
+		expect(deleteCall[1].method).toBe('DELETE')
+		const body = JSON.parse(deleteCall[1].body)
+		expect(body.sha).toBe('ocr-sha')
+		expect(body.message).toBe('sync: remove ocr-training.json')
 	})
 
 	it('throws SyncError when GitHub returns 401', async () => {
