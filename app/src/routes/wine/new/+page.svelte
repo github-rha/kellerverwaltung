@@ -6,7 +6,7 @@
 	import { savePhoto } from '$lib/data/persist'
 	import { encodePhoto } from '$lib/photo/encode'
 	import { runOcr } from '$lib/ocr/tesseract'
-	import { adaptiveThreshold } from '$lib/ocr/preprocess'
+	import { preprocessForOcr } from '$lib/ocr/preprocess'
 	import { appendOcrEntry } from '$lib/data/ocr-store'
 	import type { OcrResult } from '$lib/ocr/tesseract'
 	import type { WineType } from '$lib/data/types'
@@ -59,7 +59,7 @@
 		ocrResult = null
 		preprocessedBlob = null
 
-		adaptiveThreshold(photoFile)
+		preprocessForOcr(photoFile)
 			.then((blob) => {
 				preprocessedBlob = blob
 				return runOcr(blob)
