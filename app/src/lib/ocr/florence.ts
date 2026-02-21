@@ -27,7 +27,7 @@ function getPipeline(): Promise<Pipeline> {
 	if (!pipelinePromise) {
 		pipelinePromise = Promise.all([
 			Florence2ForConditionalGeneration.from_pretrained(MODEL_ID, {
-				dtype: 'fp32',
+				dtype: 'q8',
 				device: 'auto'
 			}),
 			AutoProcessor.from_pretrained(MODEL_ID) as Promise<Florence2Processor>,
@@ -57,7 +57,7 @@ export async function runOcr(blob: Blob): Promise<OcrResult> {
 		input_ids: textInputs.input_ids,
 		pixel_values: imageInputs.pixel_values,
 		max_new_tokens: 256,
-		num_beams: 3
+		num_beams: 1
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	} as any)) as Tensor
 
