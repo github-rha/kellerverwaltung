@@ -15,7 +15,14 @@ let workerPromise: Promise<Tesseract.Worker> | null = null
 
 function getWorker(): Promise<Tesseract.Worker> {
 	if (!workerPromise) {
-		workerPromise = Tesseract.createWorker('eng', undefined, { logger: () => {} })
+		workerPromise = Tesseract.createWorker('eng', undefined, { logger: () => {} }).then(
+			async (w) => {
+				// PSM 11: sparse text — find as much text as possible regardless of layout.
+				// Better suited to wine labels than the default page-layout mode.
+				await w.setParameters({ tessedit_pageseg_mode: Tesseract.PSM.SPARSE_TEXT })
+				return w
+			}
+		)
 	}
 	return workerPromise
 }
