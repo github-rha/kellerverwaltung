@@ -3,17 +3,24 @@
 	import { resolve } from '$app/paths'
 	import { onMount } from 'svelte'
 	import { loadSettings, saveSettings } from '$lib/data/settings'
+	import { saveOcrData } from '$lib/data/ocr-store'
 
 	let repo = $state('')
 	let pat = $state('')
 	let error = $state('')
 	let saved = $state(false)
+	let ocrCleared = $state(false)
 
 	onMount(async () => {
 		const settings = await loadSettings()
 		repo = settings.repo
 		pat = settings.pat
 	})
+
+	async function handleClearOcr() {
+		await saveOcrData({ version: 1, entries: [] })
+		ocrCleared = true
+	}
 
 	async function handleSave() {
 		error = ''
@@ -93,5 +100,19 @@
 		>
 			Save
 		</button>
+
+		<div class="border-t border-gray-200 pt-5">
+			<p class="text-sm font-medium text-gray-700 mb-1">OCR training data</p>
+			<p class="text-xs text-gray-500 mb-3">Clears the local OCR training data. Push sync to remove the file from GitHub.</p>
+			{#if ocrCleared}
+				<p class="text-sm text-green-700 mb-2">OCR data cleared.</p>
+			{/if}
+			<button
+				onclick={handleClearOcr}
+				class="w-full rounded-lg border border-gray-300 px-4 py-3 text-sm font-medium text-gray-700 active:bg-gray-50"
+			>
+				Clear OCR data
+			</button>
+		</div>
 	</div>
 </div>
