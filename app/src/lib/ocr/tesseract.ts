@@ -1,5 +1,4 @@
 import Tesseract from 'tesseract.js'
-import { adaptiveThreshold } from './preprocess'
 
 export interface OcrWord {
 	text: string
@@ -43,10 +42,9 @@ function parseTsv(tsv: string): OcrWord[] {
 	return words
 }
 
-export async function runOcr(file: File): Promise<OcrResult> {
-	const preprocessed = await adaptiveThreshold(file)
+export async function runOcr(blob: Blob): Promise<OcrResult> {
 	const worker = await getWorker()
-	const { data } = await worker.recognize(preprocessed, undefined, { text: true, tsv: true })
+	const { data } = await worker.recognize(blob, undefined, { text: true, tsv: true })
 	return {
 		text: data.text ?? '',
 		words: parseTsv(data.tsv ?? '')

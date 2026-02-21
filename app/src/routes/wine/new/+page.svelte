@@ -6,6 +6,7 @@
 	import { savePhoto } from '$lib/data/persist'
 	import { encodePhoto } from '$lib/photo/encode'
 	import { runOcr } from '$lib/ocr/tesseract'
+	import { adaptiveThreshold } from '$lib/ocr/preprocess'
 	import { appendOcrEntry } from '$lib/data/ocr-store'
 	import type { OcrResult } from '$lib/ocr/tesseract'
 	import type { WineType } from '$lib/data/types'
@@ -23,6 +24,7 @@
 	let ocrRunning = $state(false)
 	let ocrNote = $state('')
 	let ocrResult: OcrResult | null = null
+	let preprocessedBlob: Blob | null = null
 
 	function parseVintage(v: string): number | 'NV' {
 		if (v.trim().toUpperCase() === 'NV') return 'NV'
@@ -55,8 +57,13 @@
 		ocrRunning = true
 		ocrNote = ''
 		ocrResult = null
+		preprocessedBlob = null
 
-		runOcr(photoFile)
+		adaptiveThreshold(photoFile)
+			.then((blob) => {
+				preprocessedBlob = blob
+				return runOcr(blob)
+			})
 			.then((result) => {
 				ocrResult = result
 				const pre = extractPreFill(result.text)
@@ -89,7 +96,7 @@
 			if (photoFile) {
 				encoding = true
 				try {
-					const blob = await encodePhoto(photoFile)
+					const blob = preprocessedBlob ?? (await encodePhoto(photoFile))
 					await savePhoto(wine.id, blob)
 					await updateWine(wine.id, { photoRef: `photos/${wine.id}.avif` })
 				} finally {
