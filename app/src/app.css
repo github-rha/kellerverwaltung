@@ -1,1 +1,7 @@
 @import 'tailwindcss';
+
+@theme {
+	--color-wine: #a62a17;
+	--color-wine-50: #fdf3f2;
+	--color-wine-100: #fbe8e6;
+}

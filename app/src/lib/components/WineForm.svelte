@@ -48,7 +48,7 @@
 		<select
 			id="wine-type"
 			bind:value={type}
-			class="mt-1 block w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-gray-900"
+			class="mt-1 block w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-[#575757]"
 		>
 			{#each wineTypes as wt (wt.value)}
 				<option value={wt.value}>{wt.label}</option>
@@ -61,7 +61,7 @@
 		<select
 			id="wine-country"
 			bind:value={country}
-			class="mt-1 block w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-gray-900"
+			class="mt-1 block w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-[#575757]"
 		>
 			<option value="">— Not specified —</option>
 			{#each COUNTRIES as c (c)}
@@ -77,7 +77,7 @@
 			type="text"
 			bind:value={producer}
 			required
-			class="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-gray-900"
+			class="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-[#575757]"
 		/>
 	</div>
 
@@ -88,7 +88,7 @@
 			type="text"
 			bind:value={name}
 			required
-			class="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-gray-900"
+			class="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-[#575757]"
 		/>
 	</div>
 
@@ -100,7 +100,7 @@
 			bind:value={vintage}
 			required
 			placeholder="e.g. 2021 or NV"
-			class="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-gray-900"
+			class="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-[#575757]"
 		/>
 	</div>
 
@@ -112,7 +112,7 @@
 			bind:value={bottles}
 			min="0"
 			required
-			class="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-gray-900"
+			class="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-[#575757]"
 		/>
 	</div>
 
@@ -122,12 +122,12 @@
 			id="wine-notes"
 			bind:value={notes}
 			rows="3"
-			class="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-gray-900"
+			class="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-[#575757]"
 		></textarea>
 	</div>
 
 	<div class="flex gap-3 pt-2">
-		<button type="submit" class="flex-1 rounded-md bg-red-800 px-4 py-2 text-white font-medium">
+		<button type="submit" class="flex-1 rounded-md bg-wine px-4 py-2 text-white font-medium">
 			{submitLabel}
 		</button>
 		<button

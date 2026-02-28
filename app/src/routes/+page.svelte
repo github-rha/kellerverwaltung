@@ -179,9 +179,9 @@
 </script>
 
 <div class="min-h-screen bg-gray-50">
-	<header class="bg-white border-b border-gray-200 px-4 py-3">
+	<header class="bg-white border-b border-[rgba(166,42,23,0.2)] px-4 py-3">
 		<div class="flex items-center justify-between">
-			<h1 class="text-xl font-bold text-gray-900">Kellerverwaltung</h1>
+			<h1 class="text-xl font-bold text-[#575757]">Kellerverwaltung</h1>
 			<div class="flex items-center gap-2">
 				<a
 					href={resolve('/settings')}
@@ -213,7 +213,7 @@
 				</a>
 				<a
 					href={resolve('/wine/new')}
-					class="flex items-center justify-center w-10 h-10 rounded-full bg-red-800 text-white text-2xl font-light"
+					class="flex items-center justify-center w-10 h-10 rounded-full bg-wine text-white text-2xl font-light"
 					aria-label="Add wine"
 				>
 					+
@@ -229,13 +229,13 @@
 		</div>
 	</header>
 
-	<div class="bg-white border-b border-gray-200 px-4 py-2">
+	<div class="bg-white border-b border-[rgba(166,42,23,0.2)] px-4 py-2">
 		<div class="flex gap-2 mb-2">
 			{#each ['red', 'white', 'sparkling', 'dessert'] as const as type (type)}
 				<button
 					onclick={() => setType(activeType === type ? null : type)}
 					class="px-3 py-1.5 text-sm font-medium rounded-full border
-						{activeType === type ? 'border-red-800 text-red-800 bg-red-50' : 'border-gray-300 text-gray-700'}"
+						{activeType === type ? 'border-wine text-wine bg-wine-50' : 'border-gray-300 text-gray-700'}"
 				>
 					{typeLabels[type]}
 				</button>
@@ -250,7 +250,7 @@
 					}}
 					class="px-3 py-1.5 text-sm font-medium rounded-full border
 						{activeProducer !== null || activeCountry !== null || bottleFilter !== 'in-stock'
-						? 'border-red-800 text-red-800 bg-red-50'
+						? 'border-wine text-wine bg-wine-50'
 						: 'border-gray-300 text-gray-700'}"
 				>
 					Filter{activeProducer !== null || activeCountry !== null || bottleFilter !== 'in-stock'
@@ -268,7 +268,7 @@
 									<button
 										onclick={() => setProducer(activeProducer === key ? null : key)}
 										class="text-left px-2.5 py-1.5 text-sm rounded-md
-											{activeProducer === key ? 'bg-red-800 text-white' : 'text-gray-700 hover:bg-gray-100'}"
+											{activeProducer === key ? 'bg-wine text-white' : 'text-gray-700 hover:bg-gray-100'}"
 									>
 										{name}
 									</button>
@@ -282,7 +282,7 @@
 									<button
 										onclick={() => setCountry(activeCountry === c ? null : c)}
 										class="text-left px-2.5 py-1.5 text-sm rounded-md
-											{activeCountry === c ? 'bg-red-800 text-white' : 'text-gray-700 hover:bg-gray-100'}"
+											{activeCountry === c ? 'bg-wine text-white' : 'text-gray-700 hover:bg-gray-100'}"
 									>
 										{c}
 									</button>
@@ -296,9 +296,7 @@
 									bottleFilter = bottleFilter === 'single' ? 'in-stock' : 'single'
 								}}
 								class="px-2.5 py-1 text-sm rounded-full border
-									{bottleFilter === 'single'
-									? 'border-red-800 bg-red-800 text-white'
-									: 'border-gray-300 text-gray-700'}"
+									{bottleFilter === 'single' ? 'border-wine bg-wine text-white' : 'border-gray-300 text-gray-700'}"
 							>
 								Single bottle
 							</button>
@@ -307,9 +305,7 @@
 									bottleFilter = bottleFilter === 'empty' ? 'in-stock' : 'empty'
 								}}
 								class="px-2.5 py-1 text-sm rounded-full border
-									{bottleFilter === 'empty'
-									? 'border-red-800 bg-red-800 text-white'
-									: 'border-gray-300 text-gray-700'}"
+									{bottleFilter === 'empty' ? 'border-wine bg-wine text-white' : 'border-gray-300 text-gray-700'}"
 							>
 								0 bottles
 							</button>
@@ -335,7 +331,7 @@
 							<button
 								onclick={() => setSort(sort)}
 								class="w-full text-left px-3 py-2 text-sm
-									{activeSort === sort ? 'text-red-800 font-medium' : 'text-gray-700'}"
+									{activeSort === sort ? 'text-wine font-medium' : 'text-gray-700'}"
 							>
 								{sortLabels[sort]}
 							</button>
@@ -352,7 +348,7 @@
 						onclick={() => {
 							activeType = null
 						}}
-						class="inline-flex items-center gap-1 px-2 py-0.5 text-xs font-medium rounded-full bg-red-100 text-red-800"
+						class="inline-flex items-center gap-1 px-2 py-0.5 text-xs font-medium rounded-full bg-wine-100 text-wine"
 					>
 						{typeLabels[activeType]} <span aria-label="Remove filter">&times;</span>
 					</button>
@@ -362,7 +358,7 @@
 						onclick={() => {
 							activeProducer = null
 						}}
-						class="inline-flex items-center gap-1 px-2 py-0.5 text-xs font-medium rounded-full bg-red-100 text-red-800"
+						class="inline-flex items-center gap-1 px-2 py-0.5 text-xs font-medium rounded-full bg-wine-100 text-wine"
 					>
 						{activeProducerName} <span aria-label="Remove filter">&times;</span>
 					</button>
@@ -372,7 +368,7 @@
 						onclick={() => {
 							activeCountry = null
 						}}
-						class="inline-flex items-center gap-1 px-2 py-0.5 text-xs font-medium rounded-full bg-red-100 text-red-800"
+						class="inline-flex items-center gap-1 px-2 py-0.5 text-xs font-medium rounded-full bg-wine-100 text-wine"
 					>
 						{activeCountry} <span aria-label="Remove filter">&times;</span>
 					</button>
@@ -382,7 +378,7 @@
 						onclick={() => {
 							bottleFilter = 'in-stock'
 						}}
-						class="inline-flex items-center gap-1 px-2 py-0.5 text-xs font-medium rounded-full bg-red-100 text-red-800"
+						class="inline-flex items-center gap-1 px-2 py-0.5 text-xs font-medium rounded-full bg-wine-100 text-wine"
 					>
 						Single bottle <span aria-label="Remove filter">&times;</span>
 					</button>
@@ -392,7 +388,7 @@
 						onclick={() => {
 							bottleFilter = 'in-stock'
 						}}
-						class="inline-flex items-center gap-1 px-2 py-0.5 text-xs font-medium rounded-full bg-red-100 text-red-800"
+						class="inline-flex items-center gap-1 px-2 py-0.5 text-xs font-medium rounded-full bg-wine-100 text-wine"
 					>
 						0 bottles <span aria-label="Remove filter">&times;</span>
 					</button>
@@ -403,9 +399,9 @@
 
 	<!-- Sync bar -->
 	{#if ready}
-		<div class="bg-white border-b border-gray-200 px-4 py-2">
+		<div class="bg-white border-b border-[rgba(166,42,23,0.2)] px-4 py-2">
 			{#if !configured}
-				<a href={resolve('/settings')} class="text-sm text-red-800 font-medium">
+				<a href={resolve('/settings')} class="text-sm text-wine font-medium">
 					Set up sync &rarr;
 				</a>
 			{:else}

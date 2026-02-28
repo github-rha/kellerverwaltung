@@ -67,8 +67,10 @@
 </script>
 
 <div class="min-h-screen bg-gray-50">
-	<header class="bg-white border-b border-gray-200 px-4 py-3 flex items-center justify-between">
-		<h1 class="text-xl font-bold text-gray-900">Import CSV</h1>
+	<header
+		class="bg-white border-b border-[rgba(166,42,23,0.2)] px-4 py-3 flex items-center justify-between"
+	>
+		<h1 class="text-xl font-bold text-[#575757]">Import CSV</h1>
 		<a href={resolve('/')} class="text-sm text-gray-500">Cancel</a>
 	</header>
 
@@ -127,9 +129,7 @@
 								duplicateMode = 'skip'
 							}}
 							class="px-3 py-1.5 text-sm font-medium rounded-full border
-								{duplicateMode === 'skip'
-								? 'border-red-800 bg-red-800 text-white'
-								: 'border-gray-300 text-gray-700'}"
+								{duplicateMode === 'skip' ? 'border-wine bg-wine text-white' : 'border-gray-300 text-gray-700'}"
 						>
 							Skip
 						</button>
@@ -139,7 +139,7 @@
 							}}
 							class="px-3 py-1.5 text-sm font-medium rounded-full border
 								{duplicateMode === 'overwrite'
-								? 'border-red-800 bg-red-800 text-white'
+								? 'border-wine bg-wine text-white'
 								: 'border-gray-300 text-gray-700'}"
 						>
 							Overwrite
@@ -160,7 +160,7 @@
 				<button
 					onclick={handleImport}
 					disabled={!canImport || importing}
-					class="flex-1 py-3 rounded-lg bg-red-800 text-white font-medium text-sm
+					class="flex-1 py-3 rounded-lg bg-wine text-white font-medium text-sm
 						disabled:opacity-40"
 				>
 					{importing ? 'Importing…' : importLabel()}

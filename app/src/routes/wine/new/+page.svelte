@@ -129,8 +129,8 @@
 {/if}
 
 <div class="min-h-screen bg-gray-50">
-	<header class="bg-white border-b border-gray-200 px-4 py-3">
-		<h1 class="text-xl font-bold text-gray-900">Add Wine</h1>
+	<header class="bg-white border-b border-[rgba(166,42,23,0.2)] px-4 py-3">
+		<h1 class="text-xl font-bold text-[#575757]">Add Wine</h1>
 	</header>
 
 	{#if error}

@@ -19,7 +19,7 @@ export default defineConfig({
 				name: 'Kellerverwaltung',
 				short_name: 'Keller',
 				description: 'Personal wine cellar tracker',
-				theme_color: '#722f37',
+				theme_color: '#A62A17',
 				background_color: '#ffffff',
 				display: 'standalone',
 				icons: [

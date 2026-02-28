@@ -115,11 +115,11 @@
 	{#if !wine}
 		<div class="px-4 py-12 text-center text-gray-500">Wine not found</div>
 	{:else if mode === 'view'}
-		<header class="bg-white border-b border-gray-200 px-4 py-3">
+		<header class="bg-white border-b border-[rgba(166,42,23,0.2)] px-4 py-3">
 			<div class="flex items-center justify-between">
-				<a href={resolve('/')} class="text-red-800 text-sm font-medium">&larr; Back</a>
+				<a href={resolve('/')} class="text-wine text-sm font-medium">&larr; Back</a>
 				<div class="flex gap-2">
-					<button onclick={startEdit} class="text-sm font-medium text-red-800"> Edit </button>
+					<button onclick={startEdit} class="text-sm font-medium text-wine"> Edit </button>
 					<button onclick={handleDelete} class="text-sm font-medium text-gray-400"> Delete </button>
 				</div>
 			</div>
@@ -127,13 +127,13 @@
 
 		<div class="px-4 py-4 space-y-4">
 			<div>
-				<h1 class="text-2xl font-bold text-gray-900">{wine.name}</h1>
+				<h1 class="text-2xl font-bold text-[#575757]">{wine.name}</h1>
 				<p class="text-gray-500">
 					{wine.producer} &middot; {wine.vintage}{wine.country ? ` · ${wine.country}` : ''}
 				</p>
 				<span
 					class="mt-1 inline-block rounded-full px-2 py-0.5 text-xs font-medium
-						{wine.type === 'red' ? 'bg-red-100 text-red-800' : ''}
+						{wine.type === 'red' ? 'bg-wine-100 text-wine' : ''}
 						{wine.type === 'white' ? 'bg-yellow-100 text-yellow-800' : ''}
 						{wine.type === 'sparkling' ? 'bg-blue-100 text-blue-800' : ''}
 						{wine.type === 'dessert' ? 'bg-amber-100 text-amber-800' : ''}"
@@ -151,12 +151,12 @@
 					&minus;
 				</button>
 				<div class="text-center">
-					<div class="text-4xl font-bold text-gray-900">{wine.bottles}</div>
+					<div class="text-4xl font-bold text-[#575757]">{wine.bottles}</div>
 					<div class="text-sm text-gray-500">bottle{wine.bottles !== 1 ? 's' : ''}</div>
 				</div>
 				<button
 					onclick={() => handleAdjust(1)}
-					class="flex items-center justify-center w-12 h-12 rounded-full border-2 border-red-800 text-2xl font-light text-red-800 active:bg-red-50"
+					class="flex items-center justify-center w-12 h-12 rounded-full border-2 border-wine text-2xl font-light text-wine active:bg-wine-50"
 				>
 					+
 				</button>
@@ -165,7 +165,7 @@
 			{#if wine.notes}
 				<div>
 					<h2 class="text-sm font-medium text-gray-500 mb-1">Notes</h2>
-					<p class="text-gray-900">{wine.notes}</p>
+					<p class="text-[#575757]">{wine.notes}</p>
 				</div>
 			{/if}
 
@@ -190,7 +190,7 @@
 
 			<a
 				href="{resolve('/')}?producer={encodeURIComponent(wine.producerKey)}"
-				class="block text-sm font-medium text-red-800"
+				class="block text-sm font-medium text-wine"
 			>
 				More from {wine.producer} &rarr;
 			</a>
@@ -204,8 +204,8 @@
 			{/if}
 		</div>
 	{:else}
-		<header class="bg-white border-b border-gray-200 px-4 py-3">
-			<h1 class="text-xl font-bold text-gray-900">Edit Wine</h1>
+		<header class="bg-white border-b border-[rgba(166,42,23,0.2)] px-4 py-3">
+			<h1 class="text-xl font-bold text-[#575757]">Edit Wine</h1>
 		</header>
 
 		{#if error}

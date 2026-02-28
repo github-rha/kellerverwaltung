@@ -40,10 +40,10 @@
 </script>
 
 <div class="min-h-screen bg-gray-50">
-	<header class="bg-white border-b border-gray-200 px-4 py-3">
+	<header class="bg-white border-b border-[rgba(166,42,23,0.2)] px-4 py-3">
 		<div class="flex items-center gap-3">
-			<a href={resolve('/')} class="text-red-800 text-sm font-medium">&larr; Back</a>
-			<h1 class="text-xl font-bold text-gray-900">Settings</h1>
+			<a href={resolve('/')} class="text-wine text-sm font-medium">&larr; Back</a>
+			<h1 class="text-xl font-bold text-[#575757]">Settings</h1>
 		</div>
 	</header>
 
@@ -73,7 +73,7 @@
 				autocorrect="off"
 				autocapitalize="none"
 				spellcheck="false"
-				class="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm text-gray-900 placeholder-gray-400 focus:border-red-800 focus:outline-none"
+				class="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm text-[#575757] placeholder-gray-400 focus:border-wine focus:outline-none"
 			/>
 			<p class="mt-1 text-xs text-gray-500">
 				The private repository where your cellar data is stored
@@ -90,7 +90,7 @@
 				bind:value={pat}
 				placeholder="github_pat_…"
 				autocomplete="off"
-				class="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm text-gray-900 placeholder-gray-400 focus:border-red-800 focus:outline-none"
+				class="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm text-[#575757] placeholder-gray-400 focus:border-wine focus:outline-none"
 			/>
 			<p class="mt-1 text-xs text-gray-500">Needs <code>repo</code> scope on the data repository</p>
 		</div>
@@ -105,7 +105,7 @@
 				bind:value={claudeApiKey}
 				placeholder="sk-ant-…"
 				autocomplete="off"
-				class="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm text-gray-900 placeholder-gray-400 focus:border-red-800 focus:outline-none"
+				class="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm text-[#575757] placeholder-gray-400 focus:border-wine focus:outline-none"
 			/>
 			<p class="mt-1 text-xs text-gray-500">
 				Used for label reading. Stored locally, never sent anywhere except api.anthropic.com.
@@ -114,7 +114,7 @@
 
 		<button
 			onclick={handleSave}
-			class="w-full rounded-lg bg-red-800 px-4 py-3 text-sm font-semibold text-white active:bg-red-900"
+			class="w-full rounded-lg bg-wine px-4 py-3 text-sm font-semibold text-white active:bg-wine/90"
 		>
 			Save
 		</button>
