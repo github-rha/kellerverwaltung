@@ -84,8 +84,12 @@ Plan: `docs/plan/v0.8.0-ui-tweaks-bottle-history.md`
 
 ## v0.9.0 — Visual redesign
 
-- UI inspired by [haeusler-wein.ch](https://haeusler-wein.ch) (source: https://github.com/github-rha/haeusler-wein)
-- PWA icon: the falcon from haeusler-wein.ch
+UI inspired by [haeusler-wein.ch](https://haeusler-wein.ch) (source: https://github.com/github-rha/haeusler-wein).
+
+- **Accent color**: `#A62A17` (brick red) replacing current `red-800`
+- **Text color**: `#575757` (warm grey) replacing current `gray-900`
+- **Borders/dividers**: `rgba(166, 42, 23, 0.2)` subtle red tint
+- **PWA icon**: the Turmfalke (kestrel falcon) from `images/turmfalke.png` in haeusler-wein
 
 ## Future (unscheduled)
 
