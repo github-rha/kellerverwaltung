@@ -40,4 +40,4 @@ A single owner of a personal wine cellar who wants a fast, private, no-nonsense 
 - Cellar location tracking (racks/bins).
 - Multi-user or collaborative workflows.
 - Automatic background sync (manual only; GitHub sync can come later).
-- Complex ML/self-trained recognition in v0 (photo is for confirmation; scanning/OCR may be explored later).
+- Self-trained or on-device ML models for label recognition.

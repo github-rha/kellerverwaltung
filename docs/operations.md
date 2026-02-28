@@ -42,7 +42,9 @@
 
 Not applicable in the traditional sense. This is a single-user PWA:
 
-- All computation happens on the user's device.
+- Almost all computation happens on the user's device. The exception is
+  OCR label reading, which calls the Anthropic API (api.anthropic.com)
+  using the user's own API key.
 - GitHub Pages CDN handles static asset delivery.
 - The data set (a few hundred wines) fits comfortably in memory and
   IndexedDB.
