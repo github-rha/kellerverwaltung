@@ -2,10 +2,11 @@
 	import { goto } from '$app/navigation'
 	import { resolve } from '$app/paths'
 	import { onMount } from 'svelte'
-	import { loadSettings, saveSettings } from '$lib/data/settings'
+	import { loadClaudeApiKey, loadSettings, saveClaudeApiKey, saveSettings } from '$lib/data/settings'
 
 	let repo = $state('')
 	let pat = $state('')
+	let claudeApiKey = $state('')
 	let error = $state('')
 	let saved = $state(false)
 
@@ -13,20 +14,22 @@
 		const settings = await loadSettings()
 		repo = settings.repo
 		pat = settings.pat
+		claudeApiKey = await loadClaudeApiKey()
 	})
 
 	async function handleSave() {
 		error = ''
 		saved = false
-		if (!repo.trim()) {
-			error = 'Repository is required (format: owner/repo)'
+		if (repo.trim() && !pat.trim()) {
+			error = 'PAT required when repo is set'
 			return
 		}
-		if (!pat.trim()) {
-			error = 'Personal access token is required'
+		if (pat.trim() && !repo.trim()) {
+			error = 'Repo required when PAT is set'
 			return
 		}
 		await saveSettings({ repo: repo.trim(), pat: pat.trim() })
+		await saveClaudeApiKey(claudeApiKey.trim())
 		goto(resolve('/'))
 	}
 </script>
@@ -87,11 +90,29 @@
 			<p class="mt-1 text-xs text-gray-500">Needs <code>repo</code> scope on the data repository</p>
 		</div>
 
+		<div>
+			<label for="claude-key" class="block text-sm font-medium text-gray-700 mb-1">
+				Anthropic API key
+			</label>
+			<input
+				id="claude-key"
+				type="password"
+				bind:value={claudeApiKey}
+				placeholder="sk-ant-…"
+				autocomplete="off"
+				class="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm text-gray-900 placeholder-gray-400 focus:border-red-800 focus:outline-none"
+			/>
+			<p class="mt-1 text-xs text-gray-500">
+				Used for label reading. Stored locally, never sent anywhere except api.anthropic.com.
+			</p>
+		</div>
+
 		<button
 			onclick={handleSave}
 			class="w-full rounded-lg bg-red-800 px-4 py-3 text-sm font-semibold text-white active:bg-red-900"
 		>
 			Save
 		</button>
+
 	</div>
 </div>

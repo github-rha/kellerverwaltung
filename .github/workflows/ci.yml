@@ -2,7 +2,7 @@ name: CI
 
 on:
   push:
-    branches: [main]
+    branches: [main, worktree-ocr-fix]
   pull_request:
 
 jobs:
@@ -56,14 +56,14 @@ jobs:
         working-directory: app
 
       - name: Upload Pages artifact
-        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+        if: (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/worktree-ocr-fix') && github.event_name == 'push'
         uses: actions/upload-pages-artifact@v3
         with:
           path: app/build
 
   deploy:
     needs: ci
-    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    if: (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/worktree-ocr-fix') && github.event_name == 'push'
     runs-on: ubuntu-latest
     permissions:
       pages: write

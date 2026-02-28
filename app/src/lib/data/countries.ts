@@ -33,7 +33,6 @@ export const COUNTRIES: string[] = [
 	'Peru',
 	'Portugal',
 	'Romania',
-	'Russia',
 	'Serbia',
 	'Slovakia',
 	'Slovenia',

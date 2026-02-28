@@ -60,21 +60,23 @@ Plan: `docs/plan/v0.5.0-ci-pipeline.md`
 - Optional `country` column in CSV import (empty or absent → `""`)
 - Filter by country on dashboard
 
-## v0.7.0 — OCR pre-fill
+## v0.7.0 — OCR pre-fill ✓
 
-- After taking a label photo on the add-wine form, run OCR to pre-fill producer,
-  name, and vintage
-- Store raw OCR output (text, per-word confidence and bounding boxes) + corrected
-  field values in `data/ocr-training.json` in the GitHub repo, linked to the
-  wine entry by ID — synced alongside cellar.json as training data for a future
-  model
+- After taking a label photo on the add-wine form, show a crop UI to select the
+  label region, then send the image to the Claude API to pre-fill producer, name,
+  vintage, and country
+- User supplies their own Anthropic API key in Settings; stored in IndexedDB,
+  never sent anywhere except api.anthropic.com
+- Crop UI: drag-to-resize selection box with "Crop & Read" and "Skip" actions
+- Images downscaled to 1568px max before sending to stay within API limits
+
+Plan: `docs/plan/v0.7.0-ocr-prefill.md`
 
 ## Future (unscheduled)
 
 - Onboarding: first-run screen when sync is unconfigured, with instructions for
   "Add to Home Screen" in Safari and how to set up GitHub sync (create private
   repo, generate fine-grained PAT, enter settings); shown once until dismissed
-- On-device ML model for label recognition
 - Auto-push on visibility change
 - JSON export/import for backup without GitHub
 - Bottle history: record every bottle count change (timestamp, delta, source) per

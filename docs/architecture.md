@@ -32,11 +32,20 @@
                 │  data/cellar.json    │
                 │  data/photos/*.avif  │
                 └──────────────────────┘
+
+                           │ HTTPS + user API key (OCR only)
+                           ▼
+                ┌──────────────────────┐
+                │  Anthropic API       │
+                │  api.anthropic.com   │
+                │  (Claude Haiku)      │
+                └──────────────────────┘
 ```
 
-**Trust boundary**: everything inside the PWA is trusted. The only
-external system is the private GitHub repo, accessed over HTTPS with a
-Personal Access Token (PAT) stored locally on the device.
+**Trust boundary**: everything inside the PWA is trusted. External systems
+are the private GitHub repo (manual sync, PAT auth) and the Anthropic API
+(OCR on label photos, user-supplied API key). Both are accessed over HTTPS
+and only when explicitly triggered by the user.
 
 ---
 
@@ -88,7 +97,7 @@ Key views:
 | Dashboard       | Total bottle count, scrollable wine list. Add wine button. Filter button (by type: red/white/sparkling/dessert, or by producer). Sort button (by vintage or date added). Sync controls (manual push/pull, status indicator) — or a "set up sync" link to Settings if no PAT is configured. |
 | Wine detail     | **View mode** (default): all fields read-only, +1/-1 buttons, photo (if present), edit button, "more from this producer" → dashboard filtered. **Edit mode**: fields become editable, save/cancel. |
 | Add wine        | Create form with all fields + optional photo capture. Photo is encoded to AVIF and saved after wine creation. |
-| Settings        | Repo (owner/repo) and PAT input. One-time setup, accessed via gear icon on dashboard. |
+| Settings        | Repo (owner/repo), PAT, and Anthropic API key inputs. Accessed via gear icon on dashboard. |
 
 ### Data layer
 
@@ -521,20 +530,21 @@ simple, correct, and appropriate for a single-device app.
 - **No server-side sessions**: the app has no backend. There is nothing
   to log into.
 
-### PAT storage
+### Secret storage
 
-The PAT is stored in the browser's origin-scoped storage (IndexedDB or
-localStorage). It never leaves the device except in HTTPS requests to
-`api.github.com`.
+The GitHub PAT and the Anthropic API key are stored in the browser's
+origin-scoped IndexedDB. Neither leaves the device except in HTTPS requests
+to `api.github.com` and `api.anthropic.com` respectively.
 
 ### Data classification
 
-| Data                | Classification | Storage location       | Notes                                  |
-|---------------------|----------------|------------------------|----------------------------------------|
-| Wine entries (JSON) | Personal       | IndexedDB + GitHub     | Not sensitive, but private.            |
-| Photos (AVIF)       | Personal       | IndexedDB + GitHub     | Label photos only, no PII.            |
-| GitHub PAT          | Secret         | IndexedDB/localStorage | Grants repo access; treat as password. |
-| App shell (JS/CSS)  | Public         | GitHub Pages CDN       | Open source / not secret.              |
+| Data                | Classification | Storage location   | Notes                                        |
+|---------------------|----------------|--------------------|----------------------------------------------|
+| Wine entries (JSON) | Personal       | IndexedDB + GitHub | Not sensitive, but private.                  |
+| Photos (AVIF)       | Personal       | IndexedDB + GitHub | Label photos only, no PII.                   |
+| GitHub PAT          | Secret         | IndexedDB          | Grants repo access; treat as password.       |
+| Anthropic API key   | Secret         | IndexedDB          | Sent only to api.anthropic.com over HTTPS.   |
+| App shell (JS/CSS)  | Public         | GitHub Pages CDN   | Open source / not secret.                    |
 
 ### Threat model
 

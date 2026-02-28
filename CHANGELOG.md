@@ -1,5 +1,15 @@
 # Changelog
 
+## v0.7.0 — OCR pre-fill (2026-02-20)
+
+### Added
+
+- On-device OCR via Tesseract.js after label photo is taken on the add-wine form
+- Producer, name, and vintage pre-filled from OCR text (does not overwrite already-typed values)
+- "Reading label…" spinner while OCR runs; "Label read — review fields below." note on success
+- OCR failure is silent — fields remain editable
+- OCR training data (raw text, per-word confidence and bounding boxes, user-corrected values) stored in IndexedDB and synced to `data/ocr-training.json` in the GitHub repo
+
 ## v0.6.1 — Country field (2026-02-20)
 
 ### Added

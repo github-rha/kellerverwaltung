@@ -1,12 +1,18 @@
 <script lang="ts">
 	import { goto } from '$app/navigation'
 	import { resolve } from '$app/paths'
+	import { onMount } from 'svelte'
 	import WineForm from '$lib/components/WineForm.svelte'
 	import { createWine, updateWine } from '$lib/data/store'
 	import { savePhoto } from '$lib/data/persist'
 	import { encodePhoto } from '$lib/photo/encode'
+	import { runClaudeOcr } from '$lib/ocr/claude'
+	import CropBox from '$lib/components/CropBox.svelte'
+	import { loadClaudeApiKey } from '$lib/data/settings'
+	import type { OcrResult } from '$lib/ocr/claude'
 	import type { WineType } from '$lib/data/types'
 
+	let claudeApiKey = $state('')
 	let type: WineType = $state('red')
 	let producer = $state('')
 	let name = $state('')
@@ -16,7 +22,14 @@
 	let country = $state('')
 	let error = $state('')
 	let photoFile: File | null = $state(null)
+	let showCrop = $state(false)
 	let encoding = $state(false)
+	let ocrRunning = $state(false)
+	let ocrNote = $state('')
+
+	onMount(async () => {
+		claudeApiKey = await loadClaudeApiKey()
+	})
 
 	function parseVintage(v: string): number | 'NV' {
 		if (v.trim().toUpperCase() === 'NV') return 'NV'
@@ -25,9 +38,59 @@
 		return n
 	}
 
+	function extractPreFill(text: string): { producer: string; name: string; vintage: string } {
+		const lines = text
+			.split('\n')
+			.map((l) => l.trim())
+			.filter(Boolean)
+		const producerLine = lines[0] ?? ''
+		const nameLine = lines[1] ?? ''
+		const vintageMatch = text.match(/\b(\d{4})\b/g)
+		const vintageYear = vintageMatch?.map(Number).find((n) => n >= 1800 && n <= 2100)
+		return {
+			producer: producerLine,
+			name: nameLine,
+			vintage: vintageYear ? String(vintageYear) : ''
+		}
+	}
+
 	function handlePhotoSelect(e: Event) {
 		const input = e.target as HTMLInputElement
 		photoFile = input.files?.[0] ?? null
+		if (!photoFile) return
+		ocrNote = ''
+		showCrop = true
+	}
+
+	function applyOcrResult(result: OcrResult) {
+		const pre = extractPreFill(result.text)
+		if (!producer && pre.producer) producer = pre.producer
+		if (!name && pre.name) name = pre.name
+		if (!vintage && pre.vintage) vintage = pre.vintage
+		if (!country && result.country) country = result.country
+		ocrNote = 'Label read — review fields below.'
+	}
+
+	function runOcrPipeline(blob: Blob) {
+		ocrRunning = true
+		runClaudeOcr(blob, claudeApiKey)
+			.then(applyOcrResult)
+			.catch((e: unknown) => {
+				ocrNote = `Could not read label: ${e instanceof Error ? e.message : String(e)}`
+			})
+			.finally(() => {
+				ocrRunning = false
+			})
+	}
+
+	function handleCropConfirm(blob: Blob) {
+		showCrop = false
+		runOcrPipeline(blob)
+	}
+
+	function handleCropSkip() {
+		showCrop = false
+		runOcrPipeline(photoFile!)
 	}
 
 	async function handleSubmit() {
@@ -61,6 +124,10 @@
 	}
 </script>
 
+{#if showCrop && photoFile}
+	<CropBox file={photoFile} onconfirm={handleCropConfirm} oncancel={handleCropSkip} />
+{/if}
+
 <div class="min-h-screen bg-gray-50">
 	<header class="bg-white border-b border-gray-200 px-4 py-3">
 		<h1 class="text-xl font-bold text-gray-900">Add Wine</h1>
@@ -88,6 +155,25 @@
 				</svg>
 				Encoding photo…
 			</div>
+		{/if}
+
+		{#if ocrRunning}
+			<div class="flex items-center gap-2 text-sm text-gray-500 mb-3">
+				<svg class="animate-spin h-4 w-4" viewBox="0 0 24 24" fill="none">
+					<circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"
+					></circle>
+					<path
+						class="opacity-75"
+						fill="currentColor"
+						d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+					></path>
+				</svg>
+				Reading label…
+			</div>
+		{/if}
+
+		{#if ocrNote && !ocrRunning}
+			<div class="text-sm text-gray-500 mb-3">{ocrNote}</div>
 		{/if}
 
 		<label class="block">

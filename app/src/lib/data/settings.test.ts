@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it } from 'vitest'
 import { clear } from 'idb-keyval'
-import { isConfigured, loadSettings, saveSettings } from './settings'
+import { isConfigured, loadClaudeApiKey, loadSettings, saveClaudeApiKey, saveSettings } from './settings'
 
 beforeEach(async () => {
 	await clear()
@@ -28,5 +28,15 @@ describe('settings', () => {
 
 	it('isConfigured returns true when both are set', () => {
 		expect(isConfigured({ repo: 'user/repo', pat: 'abc' })).toBe(true)
+	})
+})
+
+describe('claude api key', () => {
+	it('returns empty string when nothing stored', async () => {
+		expect(await loadClaudeApiKey()).toBe('')
+	})
+	it('roundtrips the key', async () => {
+		await saveClaudeApiKey('sk-ant-abc123')
+		expect(await loadClaudeApiKey()).toBe('sk-ant-abc123')
 	})
 })

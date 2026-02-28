@@ -20,3 +20,13 @@ export async function loadSettings(): Promise<SyncSettings> {
 export async function saveSettings(settings: SyncSettings): Promise<void> {
 	await Promise.all([set(REPO_KEY, settings.repo), set(PAT_KEY, settings.pat)])
 }
+
+const CLAUDE_KEY = 'kellerverwaltung-settings-claude-key'
+
+export async function loadClaudeApiKey(): Promise<string> {
+	return (await get<string>(CLAUDE_KEY)) ?? ''
+}
+
+export async function saveClaudeApiKey(key: string): Promise<void> {
+	await set(CLAUDE_KEY, key)
+}
