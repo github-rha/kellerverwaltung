@@ -72,6 +72,21 @@ Plan: `docs/plan/v0.5.0-ci-pipeline.md`
 
 Plan: `docs/plan/v0.7.0-ocr-prefill.md`
 
+## v0.8.0 — UI tweaks + bottle history ✓
+
+- Default sort: vintage descending
+- Quick type filter pills (Red / White / Sparkling / Dessert) always visible on dashboard
+- 0-bottle wines hidden by default; "Single bottle" and "0 bottles" filters in panel
+- Bottle history: every +/− tap records a history entry (timestamp, delta, count after)
+- History timeline shown on wine detail view, most-recent-first
+
+Plan: `docs/plan/v0.8.0-ui-tweaks-bottle-history.md`
+
+## v0.9.0 — Visual redesign
+
+- UI inspired by [haeusler-wein.ch](https://haeusler-wein.ch) (source: https://github.com/github-rha/haeusler-wein)
+- PWA icon: the falcon from haeusler-wein.ch
+
 ## Future (unscheduled)
 
 - Onboarding: first-run screen when sync is unconfigured, with instructions for
@@ -79,6 +94,3 @@ Plan: `docs/plan/v0.7.0-ocr-prefill.md`
   repo, generate fine-grained PAT, enter settings); shown once until dismissed
 - Auto-push on visibility change
 - JSON export/import for backup without GitHub
-- Bottle history: record every bottle count change (timestamp, delta, source) per
-  wine entry; show a timeline on the wine detail view (e.g. "+1 · 3 Feb 2026",
-  "−2 · 12 Jan 2026"); history stored in IndexedDB and synced to GitHub

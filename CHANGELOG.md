@@ -1,5 +1,20 @@
 # Changelog
 
+## v0.8.0 — UI tweaks + bottle history (2026-02-28)
+
+### Added
+
+- Quick type filter pills (Red / White / Sparkling / Dessert) always visible on dashboard; removed from filter panel
+- Bottle count filters: "Single bottle" and "0 bottles" toggles in the filter panel
+- Active bottle filter shown as a removable pill
+- Bottle history: every +/− tap records a timestamped entry (delta + count after change)
+- History timeline on wine detail view (most-recent-first, e.g. `+1 · 28 Feb 2026`)
+
+### Changed
+
+- Default sort changed from "newest added" to "vintage descending"
+- 0-bottle wines hidden by default (new `in-stock` bottle filter)
+
 ## v0.7.0 — OCR pre-fill (2026-02-20)
 
 ### Added
