@@ -1,6 +1,12 @@
 import { describe, expect, it } from 'vitest'
 import type { WineEntry } from './types'
-import { filterByType, filterByProducer, filterByCountry, sortWines } from './filter-sort'
+import {
+	filterByType,
+	filterByProducer,
+	filterByCountry,
+	filterByBottleCount,
+	sortWines
+} from './filter-sort'
 
 function makeWine(overrides: Partial<WineEntry> = {}): WineEntry {
 	return {
@@ -130,6 +136,33 @@ describe('sortWines', () => {
 		const original = [...wines]
 		sortWines(wines, 'vintage-desc')
 		expect(wines.map((w) => w.vintage)).toEqual(original.map((w) => w.vintage))
+	})
+})
+
+describe('filterByBottleCount', () => {
+	const wines = [
+		makeWine({ bottles: 0 }),
+		makeWine({ bottles: 1 }),
+		makeWine({ bottles: 3 }),
+		makeWine({ bottles: 0 })
+	]
+
+	it('returns only wines with bottles > 0 for in-stock', () => {
+		const result = filterByBottleCount(wines, 'in-stock')
+		expect(result).toHaveLength(2)
+		expect(result.every((w) => w.bottles > 0)).toBe(true)
+	})
+
+	it('returns only wines with exactly 1 bottle for single', () => {
+		const result = filterByBottleCount(wines, 'single')
+		expect(result).toHaveLength(1)
+		expect(result[0].bottles).toBe(1)
+	})
+
+	it('returns only wines with 0 bottles for empty', () => {
+		const result = filterByBottleCount(wines, 'empty')
+		expect(result).toHaveLength(2)
+		expect(result.every((w) => w.bottles === 0)).toBe(true)
 	})
 })
 

@@ -82,6 +82,19 @@
         "addedAt": {
           "type": "string",
           "format": "date-time"
+        },
+        "history": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["timestamp", "delta", "bottles"],
+            "properties": {
+              "timestamp": { "type": "string" },
+              "delta": { "type": "integer" },
+              "bottles": { "type": "integer", "minimum": 0 }
+            },
+            "additionalProperties": false
+          }
         }
       }
     }

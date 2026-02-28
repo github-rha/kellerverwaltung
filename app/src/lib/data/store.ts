@@ -103,10 +103,21 @@ export async function adjustCount(id: string, delta: number): Promise<void> {
 	const index = cellar.wines.findIndex((w) => w.id === id)
 	if (index === -1) throw new Error(`Wine not found: ${id}`)
 
+	const wine = cellar.wines[index]
+	const newBottles = Math.max(0, wine.bottles + delta)
+	if (newBottles === wine.bottles) return
+
+	const historyEntry = {
+		timestamp: new Date().toISOString(),
+		delta: newBottles - wine.bottles,
+		bottles: newBottles
+	}
+
 	const wines = [...cellar.wines]
 	wines[index] = {
-		...wines[index],
-		bottles: Math.max(0, wines[index].bottles + delta)
+		...wine,
+		bottles: newBottles,
+		history: [...(wine.history ?? []), historyEntry]
 	}
 	cellar = { ...cellar, wines }
 	await persist()

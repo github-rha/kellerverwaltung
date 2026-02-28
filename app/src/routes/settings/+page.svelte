@@ -2,7 +2,12 @@
 	import { goto } from '$app/navigation'
 	import { resolve } from '$app/paths'
 	import { onMount } from 'svelte'
-	import { loadClaudeApiKey, loadSettings, saveClaudeApiKey, saveSettings } from '$lib/data/settings'
+	import {
+		loadClaudeApiKey,
+		loadSettings,
+		saveClaudeApiKey,
+		saveSettings
+	} from '$lib/data/settings'
 
 	let repo = $state('')
 	let pat = $state('')
@@ -113,6 +118,5 @@
 		>
 			Save
 		</button>
-
 	</div>
 </div>

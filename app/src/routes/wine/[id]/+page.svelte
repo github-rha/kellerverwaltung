@@ -169,6 +169,25 @@
 				</div>
 			{/if}
 
+			{#if wine.history?.length}
+				<div>
+					<h2 class="text-sm font-medium text-gray-500 mb-1">History</h2>
+					<ul class="space-y-0.5">
+						{#each [...wine.history].reverse() as entry (entry.timestamp)}
+							<li class="text-xs text-gray-500">
+								{entry.delta > 0 ? '+' : '\u2212'}{Math.abs(entry.delta)} &middot; {new Date(
+									entry.timestamp
+								).toLocaleDateString(undefined, {
+									day: 'numeric',
+									month: 'short',
+									year: 'numeric'
+								})}
+							</li>
+						{/each}
+					</ul>
+				</div>
+			{/if}
+
 			<a
 				href="{resolve('/')}?producer={encodeURIComponent(wine.producerKey)}"
 				class="block text-sm font-medium text-red-800"

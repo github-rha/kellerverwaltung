@@ -1,6 +1,12 @@
 import { beforeEach, describe, expect, it } from 'vitest'
 import { clear } from 'idb-keyval'
-import { isConfigured, loadClaudeApiKey, loadSettings, saveClaudeApiKey, saveSettings } from './settings'
+import {
+	isConfigured,
+	loadClaudeApiKey,
+	loadSettings,
+	saveClaudeApiKey,
+	saveSettings
+} from './settings'
 
 beforeEach(async () => {
 	await clear()

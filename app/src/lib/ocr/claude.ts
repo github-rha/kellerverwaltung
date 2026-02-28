@@ -26,7 +26,10 @@ async function normaliseBlob(blob: Blob): Promise<{ data: string; mediaType: str
 	canvas.getContext('2d')!.drawImage(bitmap, 0, 0, w, h)
 	bitmap.close()
 	const mediaType = supported.includes(blob.type) ? blob.type : 'image/jpeg'
-	const out = await canvas.convertToBlob({ type: mediaType === 'image/gif' ? 'image/jpeg' : mediaType, quality: 0.85 })
+	const out = await canvas.convertToBlob({
+		type: mediaType === 'image/gif' ? 'image/jpeg' : mediaType,
+		quality: 0.85
+	})
 	const buf = await out.arrayBuffer()
 	const bytes = new Uint8Array(buf)
 	let binary = ''

@@ -1,5 +1,11 @@
 export type WineType = 'red' | 'white' | 'sparkling' | 'dessert'
 
+export interface HistoryEntry {
+	timestamp: string // ISO 8601
+	delta: number // actual change after clamping (+1 or -1)
+	bottles: number // count after this change
+}
+
 export interface WineEntry {
 	id: string
 	type: WineType
@@ -12,6 +18,7 @@ export interface WineEntry {
 	country: string
 	photoRef: string
 	addedAt: string
+	history?: HistoryEntry[]
 }
 
 export interface Cellar {

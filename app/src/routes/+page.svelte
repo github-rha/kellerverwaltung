@@ -5,8 +5,14 @@
 	import WineList from '$lib/components/WineList.svelte'
 	import { cellarStore, initStore } from '$lib/data/store'
 	import { unsyncedStore } from '$lib/data/persist'
-	import { filterByType, filterByProducer, filterByCountry, sortWines } from '$lib/data/filter-sort'
-	import type { SortOption } from '$lib/data/filter-sort'
+	import {
+		filterByType,
+		filterByProducer,
+		filterByCountry,
+		filterByBottleCount,
+		sortWines
+	} from '$lib/data/filter-sort'
+	import type { SortOption, BottleFilter } from '$lib/data/filter-sort'
 	import type { WineType } from '$lib/data/types'
 	import { isConfigured, loadSettings } from '$lib/data/settings'
 	import type { SyncSettings } from '$lib/data/settings'
@@ -17,7 +23,8 @@
 	let activeType: WineType | null = $state(null)
 	let activeProducer: string | null = $state(null)
 	let activeCountry: string | null = $state(null)
-	let activeSort: SortOption = $state('added-newest')
+	let activeSort: SortOption = $state('vintage-desc')
+	let bottleFilter: BottleFilter = $state('in-stock')
 
 	let showFilterMenu = $state(false)
 	let showSortMenu = $state(false)
@@ -59,16 +66,22 @@
 
 	let displayedWines = $derived(
 		sortWines(
-			filterByCountry(
-				filterByProducer(filterByType(wines, activeType), activeProducer),
-				activeCountry
+			filterByBottleCount(
+				filterByCountry(
+					filterByProducer(filterByType(wines, activeType), activeProducer),
+					activeCountry
+				),
+				bottleFilter
 			),
 			activeSort
 		)
 	)
 	let filteredBottles = $derived(displayedWines.reduce((sum, w) => sum + w.bottles, 0))
 	let isFiltered = $derived(
-		activeType !== null || activeProducer !== null || activeCountry !== null
+		activeType !== null ||
+			activeProducer !== null ||
+			activeCountry !== null ||
+			bottleFilter !== 'in-stock'
 	)
 	let configured = $derived(isConfigured(settings))
 	let unsynced = $derived($unsyncedStore)
@@ -103,7 +116,6 @@
 
 	function setType(type: WineType | null) {
 		activeType = type
-		showFilterMenu = false
 	}
 
 	function setProducer(key: string | null) {
@@ -218,6 +230,17 @@
 	</header>
 
 	<div class="bg-white border-b border-gray-200 px-4 py-2">
+		<div class="flex gap-2 mb-2">
+			{#each ['red', 'white', 'sparkling', 'dessert'] as const as type (type)}
+				<button
+					onclick={() => setType(activeType === type ? null : type)}
+					class="px-3 py-1.5 text-sm font-medium rounded-full border
+						{activeType === type ? 'border-red-800 text-red-800 bg-red-50' : 'border-gray-300 text-gray-700'}"
+				>
+					{typeLabels[type]}
+				</button>
+			{/each}
+		</div>
 		<div class="flex gap-2">
 			<div class="relative">
 				<button
@@ -226,26 +249,18 @@
 						showSortMenu = false
 					}}
 					class="px-3 py-1.5 text-sm font-medium rounded-full border
-						{isFiltered ? 'border-red-800 text-red-800 bg-red-50' : 'border-gray-300 text-gray-700'}"
+						{activeProducer !== null || activeCountry !== null || bottleFilter !== 'in-stock'
+						? 'border-red-800 text-red-800 bg-red-50'
+						: 'border-gray-300 text-gray-700'}"
 				>
-					Filter{isFiltered ? ' \u2022' : ''}
+					Filter{activeProducer !== null || activeCountry !== null || bottleFilter !== 'in-stock'
+						? ' \u2022'
+						: ''}
 				</button>
 				{#if showFilterMenu}
 					<div
 						class="absolute left-0 top-full mt-1 z-10 bg-white rounded-lg shadow-lg border border-gray-200 p-3 min-w-56"
 					>
-						<div class="text-xs font-medium text-gray-500 mb-2">Wine type</div>
-						<div class="flex flex-wrap gap-1.5 mb-3">
-							{#each ['red', 'white', 'sparkling', 'dessert'] as const as type (type)}
-								<button
-									onclick={() => setType(activeType === type ? null : type)}
-									class="px-2.5 py-1 text-sm rounded-full border
-										{activeType === type ? 'border-red-800 bg-red-800 text-white' : 'border-gray-300 text-gray-700'}"
-								>
-									{typeLabels[type]}
-								</button>
-							{/each}
-						</div>
 						{#if producers.length > 0}
 							<div class="text-xs font-medium text-gray-500 mb-2">Producer</div>
 							<div class="flex flex-col gap-1 max-h-32 overflow-y-auto mb-3">
@@ -262,7 +277,7 @@
 						{/if}
 						{#if countries.length > 0}
 							<div class="text-xs font-medium text-gray-500 mb-2">Country</div>
-							<div class="flex flex-col gap-1 max-h-32 overflow-y-auto">
+							<div class="flex flex-col gap-1 max-h-32 overflow-y-auto mb-3">
 								{#each countries as c (c)}
 									<button
 										onclick={() => setCountry(activeCountry === c ? null : c)}
@@ -274,6 +289,31 @@
 								{/each}
 							</div>
 						{/if}
+						<div class="text-xs font-medium text-gray-500 mb-2">Bottles</div>
+						<div class="flex flex-wrap gap-1.5">
+							<button
+								onclick={() => {
+									bottleFilter = bottleFilter === 'single' ? 'in-stock' : 'single'
+								}}
+								class="px-2.5 py-1 text-sm rounded-full border
+									{bottleFilter === 'single'
+									? 'border-red-800 bg-red-800 text-white'
+									: 'border-gray-300 text-gray-700'}"
+							>
+								Single bottle
+							</button>
+							<button
+								onclick={() => {
+									bottleFilter = bottleFilter === 'empty' ? 'in-stock' : 'empty'
+								}}
+								class="px-2.5 py-1 text-sm rounded-full border
+									{bottleFilter === 'empty'
+									? 'border-red-800 bg-red-800 text-white'
+									: 'border-gray-300 text-gray-700'}"
+							>
+								0 bottles
+							</button>
+						</div>
 					</div>
 				{/if}
 			</div>
@@ -335,6 +375,26 @@
 						class="inline-flex items-center gap-1 px-2 py-0.5 text-xs font-medium rounded-full bg-red-100 text-red-800"
 					>
 						{activeCountry} <span aria-label="Remove filter">&times;</span>
+					</button>
+				{/if}
+				{#if bottleFilter === 'single'}
+					<button
+						onclick={() => {
+							bottleFilter = 'in-stock'
+						}}
+						class="inline-flex items-center gap-1 px-2 py-0.5 text-xs font-medium rounded-full bg-red-100 text-red-800"
+					>
+						Single bottle <span aria-label="Remove filter">&times;</span>
+					</button>
+				{/if}
+				{#if bottleFilter === 'empty'}
+					<button
+						onclick={() => {
+							bottleFilter = 'in-stock'
+						}}
+						class="inline-flex items-center gap-1 px-2 py-0.5 text-xs font-medium rounded-full bg-red-100 text-red-800"
+					>
+						0 bottles <span aria-label="Remove filter">&times;</span>
 					</button>
 				{/if}
 			</div>

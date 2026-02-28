@@ -1,6 +1,7 @@
 import type { WineEntry, WineType } from './types'
 
 export type SortOption = 'vintage-asc' | 'vintage-desc' | 'added-newest' | 'added-oldest'
+export type BottleFilter = 'in-stock' | 'single' | 'empty'
 
 export function filterByType(wines: WineEntry[], type: WineType | null): WineEntry[] {
 	if (type === null) return wines
@@ -15,6 +16,12 @@ export function filterByProducer(wines: WineEntry[], producerKey: string | null)
 export function filterByCountry(wines: WineEntry[], country: string | null): WineEntry[] {
 	if (country === null) return wines
 	return wines.filter((w) => w.country === country)
+}
+
+export function filterByBottleCount(wines: WineEntry[], filter: BottleFilter): WineEntry[] {
+	if (filter === 'single') return wines.filter((w) => w.bottles === 1)
+	if (filter === 'empty') return wines.filter((w) => w.bottles === 0)
+	return wines.filter((w) => w.bottles > 0) // 'in-stock' = default
 }
 
 function vintageNumeric(v: number | 'NV'): number {

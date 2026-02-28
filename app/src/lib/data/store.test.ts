@@ -65,6 +65,41 @@ describe('adjustCount', () => {
 		await adjustCount(wine.id, -1)
 		expect(getWine(wine.id)?.bottles).toBe(0)
 	})
+
+	it('records a history entry when count increases', async () => {
+		const wine = await createWine(sampleInput)
+		await adjustCount(wine.id, 1)
+		const updated = getWine(wine.id)
+		expect(updated?.history).toHaveLength(1)
+		expect(updated?.history?.[0].delta).toBe(1)
+		expect(updated?.history?.[0].bottles).toBe(7)
+	})
+
+	it('records a history entry when count decreases', async () => {
+		const wine = await createWine(sampleInput)
+		await adjustCount(wine.id, -1)
+		const updated = getWine(wine.id)
+		expect(updated?.history).toHaveLength(1)
+		expect(updated?.history?.[0].delta).toBe(-1)
+		expect(updated?.history?.[0].bottles).toBe(5)
+	})
+
+	it('does not record a history entry when already at 0 and decremented', async () => {
+		const wine = await createWine({ ...sampleInput, bottles: 0 })
+		await adjustCount(wine.id, -1)
+		const updated = getWine(wine.id)
+		expect(updated?.history ?? []).toHaveLength(0)
+	})
+
+	it('accumulates multiple history entries in order', async () => {
+		const wine = await createWine(sampleInput)
+		await adjustCount(wine.id, 1)
+		await adjustCount(wine.id, -1)
+		await adjustCount(wine.id, 1)
+		const updated = getWine(wine.id)
+		expect(updated?.history).toHaveLength(3)
+		expect(updated?.history?.map((h) => h.delta)).toEqual([1, -1, 1])
+	})
 })
 
 describe('updateWine', () => {
