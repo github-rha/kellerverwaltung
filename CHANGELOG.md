@@ -19,11 +19,13 @@
 
 ### Added
 
-- On-device OCR via Tesseract.js after label photo is taken on the add-wine form
-- Producer, name, and vintage pre-filled from OCR text (does not overwrite already-typed values)
-- "Reading label…" spinner while OCR runs; "Label read — review fields below." note on success
-- OCR failure is silent — fields remain editable
-- OCR training data (raw text, per-word confidence and bounding boxes, user-corrected values) stored in IndexedDB and synced to `data/ocr-training.json` in the GitHub repo
+- After taking a label photo, a crop UI lets the user select the label region before sending to OCR
+- Crop UI: drag-to-resize selection box with "Crop & Read" and "Skip" actions
+- Label sent to Claude API (claude-haiku-4-5-20251001) to pre-fill producer, name, vintage, and country
+- Pre-fill does not overwrite fields the user has already typed into
+- Anthropic API key field in Settings (stored in IndexedDB, sent only to api.anthropic.com)
+- Images downscaled to ≤ 1568 px before sending to stay within API limits
+- Error shown if API call fails (e.g. invalid key, network error)
 
 ## v0.6.1 — Country field (2026-02-20)
 
