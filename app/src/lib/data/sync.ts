@@ -178,12 +178,17 @@ export async function forcePull(settings: SyncSettings): Promise<void> {
 	await _pull(settings)
 }
 
-export async function pushInventory(settings: SyncSettings, text: string): Promise<void> {
-	const meta = await getFileMeta(settings.repo, settings.pat, 'cellar-list.txt')
+export async function pushInventory(
+	settings: SyncSettings,
+	text: string,
+	date: string
+): Promise<void> {
+	const path = `inventory/${date}-cellar-list.txt`
+	const meta = await getFileMeta(settings.repo, settings.pat, path)
 	await putFile(
 		settings.repo,
 		settings.pat,
-		'cellar-list.txt',
+		path,
 		encodeText(text),
 		meta?.sha ?? null,
 		'export: update cellar list'

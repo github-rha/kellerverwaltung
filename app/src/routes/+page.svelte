@@ -16,7 +16,7 @@
 	import type { WineType } from '$lib/data/types'
 	import { isConfigured, loadSettings } from '$lib/data/settings'
 	import type { SyncSettings } from '$lib/data/settings'
-	import { SyncError, push, pull, forcePull } from '$lib/data/sync'
+	import { push } from '$lib/data/sync'
 
 	let ready = $state(false)
 
@@ -31,9 +31,8 @@
 
 	let settings: SyncSettings = $state({ repo: '', pat: '' })
 	let online = $state(true)
-	let syncing: 'idle' | 'pushing' | 'pulling' = $state('idle')
-	let syncErrorMsg: string | null = $state(null)
-	let pullBlocked = $state(false)
+	let syncing = $state(false)
+	let syncMsg: { kind: 'ok' | 'err' | 'blocked'; text: string } | null = $state(null)
 
 	onMount(async () => {
 		await initStore()
@@ -133,47 +132,23 @@
 		showSortMenu = false
 	}
 
-	async function handlePush() {
-		syncErrorMsg = null
-		pullBlocked = false
-		syncing = 'pushing'
+	async function handleSync() {
+		syncMsg = null
+		if (wines.length < 10) {
+			syncMsg = {
+				kind: 'blocked',
+				text: `Sync blocked — only ${wines.length} wine${wines.length !== 1 ? 's' : ''} in local cellar`
+			}
+			return
+		}
+		syncing = true
 		try {
 			await push(settings)
+			syncMsg = { kind: 'ok', text: 'Synced ✓' }
 		} catch (e) {
-			syncErrorMsg = e instanceof Error ? e.message : 'Push failed'
+			syncMsg = { kind: 'err', text: e instanceof Error ? e.message : 'Sync failed' }
 		} finally {
-			syncing = 'idle'
-		}
-	}
-
-	async function handlePull() {
-		syncErrorMsg = null
-		pullBlocked = false
-		syncing = 'pulling'
-		try {
-			await pull(settings)
-		} catch (e) {
-			if (e instanceof SyncError && e.message === 'unsynced') {
-				pullBlocked = true
-			} else {
-				syncErrorMsg = e instanceof Error ? e.message : 'Pull failed'
-			}
-		} finally {
-			syncing = 'idle'
-		}
-	}
-
-	async function handleForcePull() {
-		if (!confirm('This will discard all local changes. Continue?')) return
-		syncErrorMsg = null
-		pullBlocked = false
-		syncing = 'pulling'
-		try {
-			await forcePull(settings)
-		} catch (e) {
-			syncErrorMsg = e instanceof Error ? e.message : 'Pull failed'
-		} finally {
-			syncing = 'idle'
+			syncing = false
 		}
 	}
 </script>
@@ -183,6 +158,16 @@
 		<div class="flex items-center justify-between">
 			<h1 class="text-xl font-bold text-[#575757]">Kellerverwaltung</h1>
 			<div class="flex items-center gap-2">
+				{#if configured}
+					<button
+						onclick={handleSync}
+						disabled={!online || syncing}
+						class="px-3 py-1.5 text-sm font-medium rounded-full border border-gray-300 text-gray-700 disabled:opacity-40"
+					>
+						{syncing ? 'Syncing…' : 'Sync'}
+					</button>
+					<span class="text-xs {unsynced ? 'text-amber-600' : 'text-gray-400'}">●</span>
+				{/if}
 				<a
 					href={resolve('/settings')}
 					class="flex items-center justify-center w-10 h-10 text-gray-400"
@@ -392,56 +377,22 @@
 		{/if}
 	</div>
 
-	<!-- Sync bar -->
-	{#if ready}
+	{#if ready && !configured}
 		<div class="bg-white border-b border-[rgba(166,42,23,0.2)] px-4 py-2">
-			{#if !configured}
-				<a href={resolve('/settings')} class="text-sm text-wine font-medium">
-					Set up sync &rarr;
-				</a>
-			{:else}
-				<div class="flex items-center gap-3">
-					<button
-						onclick={handlePush}
-						disabled={!online || syncing !== 'idle'}
-						class="px-3 py-1.5 text-sm font-medium rounded-full border border-gray-300 text-gray-700
-							disabled:opacity-40"
-					>
-						{syncing === 'pushing' ? 'Pushing…' : 'Push'}
-					</button>
-					<button
-						onclick={handlePull}
-						disabled={!online || syncing !== 'idle'}
-						class="px-3 py-1.5 text-sm font-medium rounded-full border border-gray-300 text-gray-700
-							disabled:opacity-40"
-					>
-						{syncing === 'pulling' ? 'Pulling…' : 'Pull'}
-					</button>
-					<span class="text-xs {unsynced ? 'text-amber-600' : 'text-gray-400'}">
-						{unsynced ? '● unsynced' : '● synced'}
-					</span>
-				</div>
+			<a href={resolve('/settings')} class="text-sm text-wine font-medium"> Set up sync &rarr; </a>
+		</div>
+	{/if}
 
-				{#if pullBlocked}
-					<div class="mt-2 text-sm text-amber-700">
-						Unsynced changes. Push first, or
-						<button
-							onclick={handleForcePull}
-							disabled={!online || syncing !== 'idle'}
-							class="underline font-medium disabled:opacity-40"
-						>
-							force-pull
-						</button>
-						to discard local changes.
-					</div>
-				{/if}
-
-				{#if syncErrorMsg}
-					<div class="mt-2 text-sm text-red-700">
-						{syncErrorMsg}
-					</div>
-				{/if}
-			{/if}
+	{#if syncMsg}
+		<div
+			class="px-4 py-2 text-sm
+				{syncMsg.kind === 'ok'
+				? 'text-green-700'
+				: syncMsg.kind === 'blocked'
+					? 'text-amber-700'
+					: 'text-red-700'}"
+		>
+			{syncMsg.text}
 		</div>
 	{/if}
 

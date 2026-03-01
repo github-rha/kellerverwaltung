@@ -106,6 +106,15 @@ Plan: `docs/plan/v0.9.1-bottle-image-filters.md`
 
 Plan: `docs/plan/v0.9.2-import-export.md`
 
+## v0.9.3 — Sync UX & inventory path
+
+- Replace Push/Pull buttons on dashboard with a single Sync button (push-only)
+- Sync blocked if local cellar has fewer than 10 wines (prevents accidental overwrite)
+- Pull / restore moved to Settings as "Restore from GitHub"
+- Inventory files stored as `inventory/YYYY-MM-DD-cellar-list.txt`
+
+Plan: `docs/plan/v0.9.3-sync-ux.md`
+
 ## Future (unscheduled)
 
 - Onboarding: first-run screen when sync is unconfigured, with instructions for

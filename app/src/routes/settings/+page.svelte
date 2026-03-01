@@ -11,7 +11,7 @@
 	} from '$lib/data/settings'
 	import { cellarStore, initStore } from '$lib/data/store'
 	import { exportText } from '$lib/data/export'
-	import { pushInventory } from '$lib/data/sync'
+	import { pushInventory, forcePull } from '$lib/data/sync'
 
 	let repo = $state('')
 	let pat = $state('')
@@ -20,6 +20,8 @@
 	let saved = $state(false)
 	let inventoryState: 'idle' | 'saving' | 'saved' | 'error' = $state('idle')
 	let inventoryError = $state('')
+	let restoreState: 'idle' | 'restoring' | 'restored' | 'error' = $state('idle')
+	let restoreError = $state('')
 	let online = $state(true)
 
 	onMount(async () => {
@@ -55,13 +57,31 @@
 		goto(resolve('/'))
 	}
 
+	async function handleRestore() {
+		if (
+			!confirm(
+				'This will replace all local data with the remote version. This cannot be undone. Continue?'
+			)
+		)
+			return
+		restoreState = 'restoring'
+		restoreError = ''
+		try {
+			await forcePull({ repo: repo.trim(), pat: pat.trim() })
+			restoreState = 'restored'
+		} catch (e) {
+			restoreError = e instanceof Error ? e.message : 'Restore failed'
+			restoreState = 'error'
+		}
+	}
+
 	async function handleInventory() {
 		inventoryState = 'saving'
 		inventoryError = ''
 		try {
 			const date = new Date().toISOString().slice(0, 10)
 			const text = exportText($cellarStore.wines, date)
-			await pushInventory({ repo: repo.trim(), pat: pat.trim() }, text)
+			await pushInventory({ repo: repo.trim(), pat: pat.trim() }, text, date)
 			inventoryState = 'saved'
 		} catch (e) {
 			inventoryError = e instanceof Error ? e.message : 'Failed to save inventory'
@@ -171,6 +191,20 @@
 				{/if}
 				{#if inventoryState === 'error'}
 					<p class="text-sm text-red-700">{inventoryError}</p>
+				{/if}
+
+				<button
+					onclick={handleRestore}
+					disabled={!online || restoreState === 'restoring'}
+					class="w-full rounded-lg border border-gray-300 px-4 py-3 text-sm font-medium text-gray-700 disabled:opacity-40"
+				>
+					{restoreState === 'restoring' ? 'Restoring…' : 'Restore from GitHub'}
+				</button>
+				{#if restoreState === 'restored'}
+					<p class="text-sm text-green-700">Restored ✓</p>
+				{/if}
+				{#if restoreState === 'error'}
+					<p class="text-sm text-red-700">{restoreError}</p>
 				{/if}
 			{/if}
 		</div>
