@@ -5,9 +5,12 @@ Personal wine cellar tracker. iPhone PWA — install via Safari "Add to Home Scr
 ## Features
 
 - Track bottle counts per wine
-- Add wines with type, producer, name, vintage, notes, and a label photo
-- Filter by wine type or producer, sort by vintage or date added
-- Sync to a private GitHub repository (manual push/pull)
+- Add wines with type, producer, name, vintage, country, notes, and a label photo
+- OCR pre-fill: photograph a label and let the Claude API read producer, name, vintage, and country
+- Filter by wine type, producer, or country; sort by vintage or date added
+- Sync to a private GitHub repository with a single Sync tap
+- Export a dated plain-text inventory list to the repository (`inventory/YYYY-MM-DD-cellar-list.txt`)
+- Import wines from CSV
 
 ## Installing on iPhone
 
@@ -42,13 +45,12 @@ Alternatively, a **classic token** with the `repo` scope works, but grants full 
 3. Paste the PAT
 4. Tap Save
 
-### Pushing and pulling
+### Syncing
 
-- **Push** — uploads your local cellar (wines + photos) to GitHub. Do this after making changes.
-- **Pull** — downloads from GitHub and overwrites your local data. Blocked if you have unsynced local changes; push first.
-- **Force-pull** — pulls and discards local changes. Shown when a normal pull is blocked.
+- **Sync** (dashboard header) — pushes your local cellar (wines + photos) to GitHub. Blocked when offline or when the local cellar has fewer than 10 wines (safety guard against accidental overwrites).
+- **Restore from GitHub** (Settings) — downloads from GitHub and overwrites all local data. Always requires confirmation.
 
-Both buttons are disabled when offline.
+The unsynced dot (●) next to the Sync button turns amber when you have local changes not yet pushed.
 
 ## Data format
 
@@ -56,7 +58,9 @@ All data is stored locally in IndexedDB. On GitHub, the repository contains:
 
 ```
 data/
-  cellar.json       ← wine inventory (JSON)
+  cellar.json              ← wine inventory (JSON)
   photos/
-    <id>.avif       ← label photos (one per wine, max 1200px, quality 50)
+    <id>.avif              ← label photos (one per wine, max 1200px, quality 50)
+inventory/
+  YYYY-MM-DD-cellar-list.txt  ← plain-text inventory snapshots (one per Inventory tap)
 ```
