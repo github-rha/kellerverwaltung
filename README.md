@@ -1,6 +1,6 @@
 # Kellerverwaltung
 
-Personal wine cellar tracker. iPhone PWA — install via Safari "Add to Home Screen", works offline.
+Personal wine cellar tracker. iPhone PWA — install via Safari "Add to Home Screen", works mostly offline.
 
 ## Features
 
@@ -16,7 +16,7 @@ Personal wine cellar tracker. iPhone PWA — install via Safari "Add to Home Scr
 
 1. Open the app URL in Safari
 2. Tap the Share button → "Add to Home Screen"
-3. The app works offline after install
+3. The app works mostly offline after install
 
 ## GitHub sync setup
 
