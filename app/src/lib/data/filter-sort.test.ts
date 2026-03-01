@@ -123,15 +123,6 @@ describe('sortWines', () => {
 		])
 	})
 
-	it('sorts by addedAt oldest first', () => {
-		const result = sortWines(wines, 'added-oldest')
-		expect(result.map((w) => w.addedAt)).toEqual([
-			'2025-01-01T00:00:00.000Z',
-			'2025-02-01T00:00:00.000Z',
-			'2025-03-01T00:00:00.000Z'
-		])
-	})
-
 	it('does not mutate the original array', () => {
 		const original = [...wines]
 		sortWines(wines, 'vintage-desc')

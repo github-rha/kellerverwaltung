@@ -1,6 +1,6 @@
 import type { WineEntry, WineType } from './types'
 
-export type SortOption = 'vintage-asc' | 'vintage-desc' | 'added-newest' | 'added-oldest'
+export type SortOption = 'vintage-asc' | 'vintage-desc' | 'added-newest'
 export type BottleFilter = 'in-stock' | 'single' | 'empty'
 
 export function filterByType(wines: WineEntry[], type: WineType | null): WineEntry[] {
@@ -37,7 +37,5 @@ export function sortWines(wines: WineEntry[], sort: SortOption): WineEntry[] {
 			return copy.sort((a, b) => vintageNumeric(b.vintage) - vintageNumeric(a.vintage))
 		case 'added-newest':
 			return copy.sort((a, b) => b.addedAt.localeCompare(a.addedAt))
-		case 'added-oldest':
-			return copy.sort((a, b) => a.addedAt.localeCompare(b.addedAt))
 	}
 }

@@ -108,23 +108,26 @@
 
 	const sortLabels: Record<SortOption, string> = {
 		'added-newest': 'Newest',
-		'added-oldest': 'Oldest',
 		'vintage-asc': 'Vintage \u2191',
 		'vintage-desc': 'Vintage \u2193'
 	}
+
+	let producerInput = $state('')
+	let countryInput = $state('')
 
 	function setType(type: WineType | null) {
 		activeType = type
 	}
 
-	function setProducer(key: string | null) {
-		activeProducer = key
-		showFilterMenu = false
+	function onProducerInput(e: Event) {
+		const val = (e.target as HTMLInputElement).value
+		const match = producers.find(([, name]) => name === val)
+		activeProducer = match ? match[0] : null
 	}
 
-	function setCountry(country: string | null) {
-		activeCountry = country
-		showFilterMenu = false
+	function onCountryInput(e: Event) {
+		const val = (e.target as HTMLInputElement).value
+		activeCountry = countries.includes(val) ? val : null
 	}
 
 	function setSort(sort: SortOption) {
@@ -226,49 +229,33 @@
 						showFilterMenu = !showFilterMenu
 						showSortMenu = false
 					}}
-					class="px-3 py-1.5 text-sm font-medium rounded-full border
+					class="flex items-center gap-1 px-2.5 py-1.5 rounded-full border
 						{activeProducer !== null || activeCountry !== null || bottleFilter !== 'in-stock'
 						? 'border-wine text-wine bg-wine-50'
 						: 'border-gray-300 text-gray-700'}"
 				>
-					Filter{activeProducer !== null || activeCountry !== null || bottleFilter !== 'in-stock'
-						? ' \u2022'
-						: ''}
+					<svg
+						xmlns="http://www.w3.org/2000/svg"
+						viewBox="0 0 20 20"
+						fill="currentColor"
+						class="w-4 h-4"
+					>
+						<path
+							fill-rule="evenodd"
+							d="M2.628 1.601C5.028 1.206 7.49 1 10 1s4.973.206 7.372.601a.75.75 0 0 1 .628.74v2.288a2.25 2.25 0 0 1-.659 1.59l-4.682 4.683a2.25 2.25 0 0 0-.659 1.59v3.037c0 .684-.31 1.33-.844 1.757l-1.937 1.55A.75.75 0 0 1 8 18.25v-5.757a2.25 2.25 0 0 0-.659-1.591L2.659 6.22A2.25 2.25 0 0 1 2 4.629V2.34a.75.75 0 0 1 .628-.74Z"
+							clip-rule="evenodd"
+						/>
+					</svg>
+					{#if activeProducer !== null || activeCountry !== null || bottleFilter !== 'in-stock'}
+						<span class="text-xs">&bull;</span>
+					{/if}
 				</button>
 				{#if showFilterMenu}
 					<div
 						class="absolute left-0 top-full mt-1 z-10 bg-white rounded-lg shadow-lg border border-gray-200 p-3 min-w-56"
 					>
-						{#if producers.length > 0}
-							<div class="text-xs font-medium text-gray-500 mb-2">Producer</div>
-							<div class="flex flex-col gap-1 max-h-32 overflow-y-auto mb-3">
-								{#each producers as [key, name] (key)}
-									<button
-										onclick={() => setProducer(activeProducer === key ? null : key)}
-										class="text-left px-2.5 py-1.5 text-sm rounded-md
-											{activeProducer === key ? 'bg-wine text-white' : 'text-gray-700 hover:bg-gray-100'}"
-									>
-										{name}
-									</button>
-								{/each}
-							</div>
-						{/if}
-						{#if countries.length > 0}
-							<div class="text-xs font-medium text-gray-500 mb-2">Country</div>
-							<div class="flex flex-col gap-1 max-h-32 overflow-y-auto mb-3">
-								{#each countries as c (c)}
-									<button
-										onclick={() => setCountry(activeCountry === c ? null : c)}
-										class="text-left px-2.5 py-1.5 text-sm rounded-md
-											{activeCountry === c ? 'bg-wine text-white' : 'text-gray-700 hover:bg-gray-100'}"
-									>
-										{c}
-									</button>
-								{/each}
-							</div>
-						{/if}
 						<div class="text-xs font-medium text-gray-500 mb-2">Bottles</div>
-						<div class="flex flex-wrap gap-1.5">
+						<div class="flex flex-wrap gap-1.5 mb-3">
 							<button
 								onclick={() => {
 									bottleFilter = bottleFilter === 'single' ? 'in-stock' : 'single'
@@ -288,6 +275,38 @@
 								0 bottles
 							</button>
 						</div>
+						{#if producers.length > 0}
+							<div class="text-xs font-medium text-gray-500 mb-1">Producer</div>
+							<input
+								type="text"
+								list="producers-list"
+								bind:value={producerInput}
+								oninput={onProducerInput}
+								placeholder="Search producer…"
+								class="w-full rounded-md border border-gray-300 px-2.5 py-1.5 text-sm text-[#575757] placeholder-gray-400 mb-3 focus:border-wine focus:outline-none"
+							/>
+							<datalist id="producers-list">
+								{#each producers as [, name] (name)}
+									<option value={name}></option>
+								{/each}
+							</datalist>
+						{/if}
+						{#if countries.length > 0}
+							<div class="text-xs font-medium text-gray-500 mb-1">Country</div>
+							<input
+								type="text"
+								list="countries-list"
+								bind:value={countryInput}
+								oninput={onCountryInput}
+								placeholder="Search country…"
+								class="w-full rounded-md border border-gray-300 px-2.5 py-1.5 text-sm text-[#575757] placeholder-gray-400 focus:border-wine focus:outline-none"
+							/>
+							<datalist id="countries-list">
+								{#each countries as c (c)}
+									<option value={c}></option>
+								{/each}
+							</datalist>
+						{/if}
 					</div>
 				{/if}
 			</div>
@@ -305,7 +324,7 @@
 					<div
 						class="absolute left-0 top-full mt-1 z-10 bg-white rounded-lg shadow-lg border border-gray-200 py-1 min-w-40"
 					>
-						{#each ['added-newest', 'added-oldest', 'vintage-asc', 'vintage-desc'] as const as sort (sort)}
+						{#each ['vintage-desc', 'vintage-asc', 'added-newest'] as const as sort (sort)}
 							<button
 								onclick={() => setSort(sort)}
 								class="w-full text-left px-3 py-2 text-sm
@@ -335,6 +354,7 @@
 					<button
 						onclick={() => {
 							activeProducer = null
+							producerInput = ''
 						}}
 						class="inline-flex items-center gap-1 px-2 py-0.5 text-xs font-medium rounded-full bg-wine-100 text-wine"
 					>
@@ -345,6 +365,7 @@
 					<button
 						onclick={() => {
 							activeCountry = null
+							countryInput = ''
 						}}
 						class="inline-flex items-center gap-1 px-2 py-0.5 text-xs font-medium rounded-full bg-wine-100 text-wine"
 					>

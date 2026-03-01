@@ -121,6 +121,15 @@ Plan: `docs/plan/v0.9.3-sync-ux.md`
 
 Plan: `docs/plan/v0.9.4-filter-row.md`
 
+## v0.9.5 — Filter UX improvements
+
+- Filter button shows funnel icon instead of "Filter" text
+- Drop "Oldest" sort option; keep Vintage ↓, Vintage ↑, Newest
+- Filter panel reordered: Bottles first, then Producer, Country
+- Producer and Country filters replaced with autocomplete text inputs
+
+Plan: `docs/plan/v0.9.5-filter-ux.md`
+
 ## Future (unscheduled)
 
 - Onboarding: first-run screen when sync is unconfigured, with instructions for
