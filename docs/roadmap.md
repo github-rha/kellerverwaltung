@@ -98,6 +98,14 @@ UI inspired by [haeusler-wein.ch](https://haeusler-wein.ch) (source: https://git
 
 Plan: `docs/plan/v0.9.1-bottle-image-filters.md`
 
+## v0.9.2 — Import & export
+
+- Move CSV import from dashboard header into Settings
+- Add one-tap "Export to GitHub" in Settings: pushes `cellar-list.txt` (plain
+  text, print-ready) with producer, name, vintage, bottles for all in-stock wines
+
+Plan: `docs/plan/v0.9.2-import-export.md`
+
 ## Future (unscheduled)
 
 - Onboarding: first-run screen when sync is unconfigured, with instructions for

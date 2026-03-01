@@ -5,22 +5,39 @@
 	import {
 		loadClaudeApiKey,
 		loadSettings,
+		isConfigured,
 		saveClaudeApiKey,
 		saveSettings
 	} from '$lib/data/settings'
+	import { cellarStore, initStore } from '$lib/data/store'
+	import { exportText } from '$lib/data/export'
+	import { pushInventory } from '$lib/data/sync'
 
 	let repo = $state('')
 	let pat = $state('')
 	let claudeApiKey = $state('')
 	let error = $state('')
 	let saved = $state(false)
+	let inventoryState: 'idle' | 'saving' | 'saved' | 'error' = $state('idle')
+	let inventoryError = $state('')
+	let online = $state(true)
 
 	onMount(async () => {
+		await initStore()
 		const settings = await loadSettings()
 		repo = settings.repo
 		pat = settings.pat
 		claudeApiKey = await loadClaudeApiKey()
+		online = navigator.onLine
+		window.addEventListener('online', () => {
+			online = true
+		})
+		window.addEventListener('offline', () => {
+			online = false
+		})
 	})
+
+	let configured = $derived(isConfigured({ repo, pat }))
 
 	async function handleSave() {
 		error = ''
@@ -36,6 +53,20 @@
 		await saveSettings({ repo: repo.trim(), pat: pat.trim() })
 		await saveClaudeApiKey(claudeApiKey.trim())
 		goto(resolve('/'))
+	}
+
+	async function handleInventory() {
+		inventoryState = 'saving'
+		inventoryError = ''
+		try {
+			const date = new Date().toISOString().slice(0, 10)
+			const text = exportText($cellarStore.wines, date)
+			await pushInventory({ repo: repo.trim(), pat: pat.trim() }, text)
+			inventoryState = 'saved'
+		} catch (e) {
+			inventoryError = e instanceof Error ? e.message : 'Failed to save inventory'
+			inventoryState = 'error'
+		}
 	}
 </script>
 
@@ -118,5 +149,30 @@
 		>
 			Save
 		</button>
+
+		<div class="border-t border-gray-200 pt-5 space-y-3">
+			<a
+				href={resolve('/import')}
+				class="flex items-center justify-between px-4 py-3 rounded-lg border border-gray-300 text-sm font-medium text-gray-700"
+			>
+				Import CSV <span class="text-gray-400">&rsaquo;</span>
+			</a>
+
+			{#if configured}
+				<button
+					onclick={handleInventory}
+					disabled={!online || inventoryState === 'saving'}
+					class="w-full rounded-lg border border-gray-300 px-4 py-3 text-sm font-medium text-gray-700 disabled:opacity-40"
+				>
+					{inventoryState === 'saving' ? 'Saving…' : 'Inventory'}
+				</button>
+				{#if inventoryState === 'saved'}
+					<p class="text-sm text-green-700">Saved ✓</p>
+				{/if}
+				{#if inventoryState === 'error'}
+					<p class="text-sm text-red-700">{inventoryError}</p>
+				{/if}
+			{/if}
+		</div>
 	</div>
 </div>
