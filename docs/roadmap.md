@@ -115,6 +115,12 @@ Plan: `docs/plan/v0.9.2-import-export.md`
 
 Plan: `docs/plan/v0.9.3-sync-ux.md`
 
+## v0.9.4 — Single filter row
+
+- Merge bottle type image buttons and Filter/Sort pills onto one line
+
+Plan: `docs/plan/v0.9.4-filter-row.md`
+
 ## Future (unscheduled)
 
 - Onboarding: first-run screen when sync is unconfigured, with instructions for
