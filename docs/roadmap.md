@@ -130,6 +130,13 @@ Plan: `docs/plan/v0.9.4-filter-row.md`
 
 Plan: `docs/plan/v0.9.5-filter-ux.md`
 
+## v0.9.6 — Onboarding screen & filter dropdown fix
+
+- First-run onboarding overlay (shown once, dismissed with "Get started")
+- Fix filter dropdown going off-screen: move Filter + Sort to left of bottle images
+
+Plan: `docs/plan/v0.9.6-onboarding-filter-fix.md`
+
 ## Future (unscheduled)
 
 - Onboarding: first-run screen when sync is unconfigured, with instructions for

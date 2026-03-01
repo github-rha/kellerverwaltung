@@ -4,6 +4,7 @@ import type { Cellar } from './types'
 
 const DB_KEY = 'kellerverwaltung-cellar'
 const UNSYNCED_KEY = 'kellerverwaltung-unsynced'
+const ONBOARDED_KEY = 'kellerverwaltung-onboarded'
 
 export const unsyncedStore = writable<boolean>(false)
 
@@ -58,4 +59,12 @@ export async function loadPhotoBuffer(wineId: string): Promise<ArrayBuffer | und
 
 export async function deletePhoto(wineId: string): Promise<void> {
 	await del(photoKey(wineId))
+}
+
+export async function loadOnboarded(): Promise<boolean> {
+	return (await get<boolean>(ONBOARDED_KEY)) ?? false
+}
+
+export async function markOnboarded(): Promise<void> {
+	await set(ONBOARDED_KEY, true)
 }

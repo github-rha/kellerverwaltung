@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it } from 'vitest'
 import { clear, set } from 'idb-keyval'
-import { loadCellar, saveCellar } from './persist'
+import { loadCellar, loadOnboarded, markOnboarded, saveCellar } from './persist'
 import type { Cellar } from './types'
 
 beforeEach(async () => {
@@ -61,5 +61,16 @@ describe('persistence', () => {
 		await set('kellerverwaltung-cellar', oldCellar)
 		const loaded = await loadCellar()
 		expect(loaded.wines[0].country).toBe('')
+	})
+})
+
+describe('onboarding flag', () => {
+	it('returns false when not yet set', async () => {
+		expect(await loadOnboarded()).toBe(false)
+	})
+
+	it('returns true after markOnboarded', async () => {
+		await markOnboarded()
+		expect(await loadOnboarded()).toBe(true)
 	})
 })

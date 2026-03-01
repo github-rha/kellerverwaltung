@@ -4,7 +4,7 @@
 	import { resolve } from '$app/paths'
 	import WineList from '$lib/components/WineList.svelte'
 	import { cellarStore, initStore } from '$lib/data/store'
-	import { unsyncedStore } from '$lib/data/persist'
+	import { unsyncedStore, loadOnboarded, markOnboarded } from '$lib/data/persist'
 	import {
 		filterByType,
 		filterByProducer,
@@ -19,6 +19,7 @@
 	import { push } from '$lib/data/sync'
 
 	let ready = $state(false)
+	let showOnboarding = $state(false)
 
 	let activeType: WineType | null = $state(null)
 	let activeProducer: string | null = $state(null)
@@ -34,9 +35,15 @@
 	let syncing = $state(false)
 	let syncMsg: { kind: 'ok' | 'err' | 'blocked'; text: string } | null = $state(null)
 
+	async function dismissOnboarding() {
+		await markOnboarded()
+		showOnboarding = false
+	}
+
 	onMount(async () => {
 		await initStore()
 		settings = await loadSettings()
+		showOnboarding = !(await loadOnboarded())
 		online = navigator.onLine
 		window.addEventListener('online', () => {
 			online = true
@@ -212,17 +219,6 @@
 
 	<div class="bg-white border-b border-[rgba(166,42,23,0.2)] px-4 py-2">
 		<div class="flex items-center gap-2">
-			{#each ['red', 'white', 'sparkling', 'dessert'] as const as type (type)}
-				<button
-					onclick={() => setType(activeType === type ? null : type)}
-					aria-label={typeLabels[type]}
-					aria-pressed={activeType === type}
-					class="flex items-center justify-center w-10 h-10 rounded-full border-2
-						{activeType === type ? 'border-wine' : 'border-transparent'}"
-				>
-					<img src="/bottle-{type}.png" alt={typeLabels[type]} class="w-8 h-8 object-contain" />
-				</button>
-			{/each}
 			<div class="relative">
 				<button
 					onclick={() => {
@@ -272,7 +268,7 @@
 								class="px-2.5 py-1 text-sm rounded-full border
 									{bottleFilter === 'empty' ? 'border-wine bg-wine text-white' : 'border-gray-300 text-gray-700'}"
 							>
-								0 bottles
+								Finito
 							</button>
 						</div>
 						{#if producers.length > 0}
@@ -336,6 +332,17 @@
 					</div>
 				{/if}
 			</div>
+			{#each ['red', 'white', 'sparkling', 'dessert'] as const as type (type)}
+				<button
+					onclick={() => setType(activeType === type ? null : type)}
+					aria-label={typeLabels[type]}
+					aria-pressed={activeType === type}
+					class="flex items-center justify-center w-10 h-10 rounded-full border-2
+						{activeType === type ? 'border-wine' : 'border-transparent'}"
+				>
+					<img src="/bottle-{type}.png" alt={typeLabels[type]} class="w-8 h-8 object-contain" />
+				</button>
+			{/each}
 		</div>
 
 		{#if isFiltered}
@@ -389,7 +396,7 @@
 						}}
 						class="inline-flex items-center gap-1 px-2 py-0.5 text-xs font-medium rounded-full bg-wine-100 text-wine"
 					>
-						0 bottles <span aria-label="Remove filter">&times;</span>
+						Finito <span aria-label="Remove filter">&times;</span>
 					</button>
 				{/if}
 			</div>
@@ -423,3 +430,32 @@
 		{/if}
 	</main>
 </div>
+
+{#if showOnboarding}
+	<div
+		class="fixed inset-0 z-50 flex flex-col items-center justify-center bg-white px-8 text-center"
+	>
+		<h1 class="text-2xl font-bold text-[#575757] mb-2">Kellerverwaltung</h1>
+		<p class="text-gray-500 mb-8">Your personal wine cellar, always in your pocket.</p>
+
+		<div class="w-full max-w-xs space-y-4 text-left mb-10">
+			<div>
+				<p class="text-sm font-semibold text-[#575757]">Install on iPhone</p>
+				<p class="text-sm text-gray-500">Open in Safari → tap Share → "Add to Home Screen"</p>
+			</div>
+			<div>
+				<p class="text-sm font-semibold text-[#575757]">Back up your data</p>
+				<p class="text-sm text-gray-500">
+					Set up a private GitHub repository in Settings to keep your cellar safe and synced.
+				</p>
+			</div>
+		</div>
+
+		<button
+			onclick={dismissOnboarding}
+			class="w-full max-w-xs rounded-lg bg-wine px-4 py-3 text-sm font-semibold text-white active:bg-wine/90"
+		>
+			Get started
+		</button>
+	</div>
+{/if}
