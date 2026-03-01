@@ -33,7 +33,7 @@ test('+1 on wine detail increments count', async ({ page }) => {
 	await page.getByText('Count Wine').click()
 	await page.click('button[aria-label="+1"], button:has-text("+")')
 
-	await expect(page.getByText('3')).toBeVisible()
+	await expect(page.getByText('3', { exact: true })).toBeVisible()
 })
 
 test('edit wine and see changes', async ({ page }) => {
