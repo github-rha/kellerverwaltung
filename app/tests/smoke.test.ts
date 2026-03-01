@@ -36,6 +36,25 @@ test('+1 on wine detail increments count', async ({ page }) => {
 	await expect(page.getByText('3', { exact: true })).toBeVisible()
 })
 
+test('type filter toggle shows and hides wines', async ({ page }) => {
+	await page.goto('/')
+	await page.click('[aria-label="Add wine"]')
+	await page.selectOption('#wine-type', 'white')
+	await page.fill('#wine-producer', 'Filter Producer')
+	await page.fill('#wine-name', 'Filter Riesling')
+	await page.fill('#wine-vintage', '2021')
+	await page.fill('#wine-bottles', '1')
+	await page.click('button[type="submit"]')
+
+	await expect(page.getByText('Filter Riesling')).toBeVisible()
+
+	await page.click('button[aria-label="Red"]')
+	await expect(page.getByText('Filter Riesling')).not.toBeVisible()
+
+	await page.click('button[aria-label="Red"]')
+	await expect(page.getByText('Filter Riesling')).toBeVisible()
+})
+
 test('edit wine and see changes', async ({ page }) => {
 	await page.goto('/')
 	await page.click('[aria-label="Add wine"]')
