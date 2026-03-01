@@ -213,10 +213,10 @@
 				</a>
 				<a
 					href={resolve('/wine/new')}
-					class="flex items-center justify-center w-10 h-10 rounded-full bg-wine text-white text-2xl font-light"
+					class="flex items-center justify-center w-10 h-10"
 					aria-label="Add wine"
 				>
-					+
+					<img src="/bottle-plus.png" alt="" class="w-8 h-8 object-contain" />
 				</a>
 			</div>
 		</div>
@@ -230,14 +230,16 @@
 	</header>
 
 	<div class="bg-white border-b border-[rgba(166,42,23,0.2)] px-4 py-2">
-		<div class="flex gap-2 mb-2">
+		<div class="flex gap-3 mb-2">
 			{#each ['red', 'white', 'sparkling', 'dessert'] as const as type (type)}
 				<button
 					onclick={() => setType(activeType === type ? null : type)}
-					class="px-3 py-1.5 text-sm font-medium rounded-full border
-						{activeType === type ? 'border-wine text-wine bg-wine-50' : 'border-gray-300 text-gray-700'}"
+					aria-label={typeLabels[type]}
+					aria-pressed={activeType === type}
+					class="flex items-center justify-center w-10 h-10 rounded-full border-2
+						{activeType === type ? 'border-wine' : 'border-transparent'}"
 				>
-					{typeLabels[type]}
+					<img src="/bottle-{type}.png" alt={typeLabels[type]} class="w-8 h-8 object-contain" />
 				</button>
 			{/each}
 		</div>

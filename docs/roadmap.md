@@ -91,6 +91,13 @@ UI inspired by [haeusler-wein.ch](https://haeusler-wein.ch) (source: https://git
 - **Borders/dividers**: `rgba(166, 42, 23, 0.2)` subtle red tint
 - **PWA icon**: the Turmfalke (kestrel falcon) from `images/turmfalke.png` in haeusler-wein
 
+## v0.9.1 — Bottle image filters and add button
+
+- Replace Red/White/Sparkling/Dessert text filter pills with `bottle-{type}.png` images
+- Replace the "+" add button with `bottle-plus.png`
+
+Plan: `docs/plan/v0.9.1-bottle-image-filters.md`
+
 ## Future (unscheduled)
 
 - Onboarding: first-run screen when sync is unconfigured, with instructions for
