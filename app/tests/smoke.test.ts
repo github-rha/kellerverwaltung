@@ -3,19 +3,22 @@ import { test, expect } from '@playwright/test'
 test.beforeEach(async ({ page }) => {
 	await page.goto('/')
 	const getStarted = page.getByRole('button', { name: 'Get started' })
-	if (await getStarted.isVisible()) {
+	const shown = await getStarted
+		.waitFor({ state: 'visible', timeout: 3000 })
+		.then(() => true)
+		.catch(() => false)
+	if (shown) {
 		await getStarted.click()
+		await getStarted.waitFor({ state: 'hidden' })
 	}
 })
 
 test('dashboard loads', async ({ page }) => {
-	await page.goto('/')
-	await expect(page.locator('h1')).toHaveText('Kellerverwaltung')
+	await expect(page.locator('h1').first()).toHaveText('Kellerverwaltung')
 	await expect(page.getByText('0 bottles total')).toBeVisible()
 })
 
 test('add wine and see it on dashboard', async ({ page }) => {
-	await page.goto('/')
 	await page.click('[aria-label="Add wine"]')
 
 	await page.selectOption('#wine-type', 'red')
@@ -30,7 +33,6 @@ test('add wine and see it on dashboard', async ({ page }) => {
 })
 
 test('+1 on wine detail increments count', async ({ page }) => {
-	await page.goto('/')
 	await page.click('[aria-label="Add wine"]')
 	await page.fill('#wine-producer', 'Test Producer')
 	await page.fill('#wine-name', 'Count Wine')
@@ -45,7 +47,6 @@ test('+1 on wine detail increments count', async ({ page }) => {
 })
 
 test('type filter toggle shows and hides wines', async ({ page }) => {
-	await page.goto('/')
 	await page.click('[aria-label="Add wine"]')
 	await page.selectOption('#wine-type', 'white')
 	await page.fill('#wine-producer', 'Filter Producer')
@@ -64,7 +65,6 @@ test('type filter toggle shows and hides wines', async ({ page }) => {
 })
 
 test('edit wine and see changes', async ({ page }) => {
-	await page.goto('/')
 	await page.click('[aria-label="Add wine"]')
 	await page.fill('#wine-producer', 'Test Producer')
 	await page.fill('#wine-name', 'Original Name')
