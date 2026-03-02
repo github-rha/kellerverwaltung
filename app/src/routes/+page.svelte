@@ -28,7 +28,6 @@
 	let bottleFilter: BottleFilter = $state('in-stock')
 
 	let showFilterMenu = $state(false)
-	let showSortMenu = $state(false)
 
 	let settings: SyncSettings = $state({ repo: '', pat: '' })
 	let online = $state(true)
@@ -137,9 +136,11 @@
 		activeCountry = countries.includes(val) ? val : null
 	}
 
-	function setSort(sort: SortOption) {
-		activeSort = sort
-		showSortMenu = false
+	const sortOrder: SortOption[] = ['vintage-desc', 'vintage-asc', 'added-newest']
+
+	function cycleSort() {
+		const idx = sortOrder.indexOf(activeSort)
+		activeSort = sortOrder[(idx + 1) % sortOrder.length]
 	}
 
 	async function handleSync() {
@@ -223,7 +224,6 @@
 				<button
 					onclick={() => {
 						showFilterMenu = !showFilterMenu
-						showSortMenu = false
 					}}
 					class="flex items-center gap-1 px-2.5 py-1.5 rounded-full border
 						{activeProducer !== null || activeCountry !== null || bottleFilter !== 'in-stock'
@@ -306,32 +306,6 @@
 					</div>
 				{/if}
 			</div>
-			<div class="relative">
-				<button
-					onclick={() => {
-						showSortMenu = !showSortMenu
-						showFilterMenu = false
-					}}
-					class="px-3 py-1.5 text-sm font-medium rounded-full border border-gray-300 text-gray-700"
-				>
-					{sortLabels[activeSort]}
-				</button>
-				{#if showSortMenu}
-					<div
-						class="absolute left-0 top-full mt-1 z-10 bg-white rounded-lg shadow-lg border border-gray-200 py-1 min-w-40"
-					>
-						{#each ['vintage-desc', 'vintage-asc', 'added-newest'] as const as sort (sort)}
-							<button
-								onclick={() => setSort(sort)}
-								class="w-full text-left px-3 py-2 text-sm
-									{activeSort === sort ? 'text-wine font-medium' : 'text-gray-700'}"
-							>
-								{sortLabels[sort]}
-							</button>
-						{/each}
-					</div>
-				{/if}
-			</div>
 			{#each ['red', 'white', 'sparkling', 'dessert'] as const as type (type)}
 				<button
 					onclick={() => setType(activeType === type ? null : type)}
@@ -343,6 +317,12 @@
 					<img src="/bottle-{type}.png" alt={typeLabels[type]} class="w-8 h-8 object-contain" />
 				</button>
 			{/each}
+			<button
+				onclick={cycleSort}
+				class="px-3 py-1.5 text-sm font-medium rounded-full border border-gray-300 text-gray-700"
+			>
+				{sortLabels[activeSort]}
+			</button>
 		</div>
 
 		{#if isFiltered}
