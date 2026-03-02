@@ -1,5 +1,13 @@
 import { test, expect } from '@playwright/test'
 
+test.beforeEach(async ({ page }) => {
+	await page.goto('/')
+	const getStarted = page.getByRole('button', { name: 'Get started' })
+	if (await getStarted.isVisible()) {
+		await getStarted.click()
+	}
+})
+
 test('dashboard loads', async ({ page }) => {
 	await page.goto('/')
 	await expect(page.locator('h1')).toHaveText('Kellerverwaltung')
