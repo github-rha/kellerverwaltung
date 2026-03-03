@@ -220,7 +220,7 @@
 	</header>
 
 	<div class="bg-white border-b border-[rgba(166,42,23,0.2)] px-4 py-2">
-		<div class="flex items-center gap-1">
+		<div class="flex items-center gap-0.5">
 			<div class="relative">
 				<button
 					onclick={() => {

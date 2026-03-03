@@ -1,6 +1,5 @@
 export interface OcrResult {
 	text: string
-	words: never[]
 	country?: string
 }
 
@@ -69,10 +68,15 @@ export async function runClaudeOcr(blob: Blob, apiKey: string): Promise<OcrResul
 	const json = await res.json()
 	const rawText: string = json.content?.[0]?.text ?? ''
 	const match = rawText.match(/\{[\s\S]*\}/)
-	const fields = match ? JSON.parse(match[0]) : {}
+	let fields: Record<string, string> = {}
+	try {
+		fields = match ? JSON.parse(match[0]) : {}
+	} catch {
+		// Claude returned unparseable content — fall through with empty fields
+	}
 	// Format as newline-separated lines so extractPreFill in +page.svelte works unchanged
 	const text = [fields.producer ?? '', fields.name ?? '', fields.vintage ?? '']
 		.filter(Boolean)
 		.join('\n')
-	return { text, words: [], country: fields.country ?? '' }
+	return { text, country: fields.country ?? '' }
 }

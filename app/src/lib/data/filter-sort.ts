@@ -37,5 +37,7 @@ export function sortWines(wines: WineEntry[], sort: SortOption): WineEntry[] {
 			return copy.sort((a, b) => vintageNumeric(b.vintage) - vintageNumeric(a.vintage))
 		case 'added-newest':
 			return copy.sort((a, b) => b.addedAt.localeCompare(a.addedAt))
+		default:
+			return copy
 	}
 }

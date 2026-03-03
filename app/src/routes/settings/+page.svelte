@@ -208,5 +208,9 @@
 				{/if}
 			{/if}
 		</div>
+
+		<p class="text-center text-xs text-gray-400 pt-4">
+			a <a href="https://haeusler-wein.ch" class="underline">haeusler-wein.ch</a> project
+		</p>
 	</div>
 </div>
