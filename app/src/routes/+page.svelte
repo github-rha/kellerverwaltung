@@ -52,7 +52,7 @@
 		})
 		const params = $page.url.searchParams
 		const typeParam = params.get('type')
-		if (typeParam && ['red', 'white', 'sparkling', 'dessert', 'rose'].includes(typeParam)) {
+		if (typeParam && ['red', 'rose', 'white', 'sparkling', 'dessert'].includes(typeParam)) {
 			activeType = typeParam as WineType
 		}
 		const producerParam = params.get('producer')
@@ -220,7 +220,7 @@
 	</header>
 
 	<div class="bg-white border-b border-[rgba(166,42,23,0.2)] px-4 py-2">
-		<div class="flex items-center gap-2">
+		<div class="flex items-center gap-1">
 			<div class="relative">
 				<button
 					onclick={() => {
@@ -307,15 +307,15 @@
 					</div>
 				{/if}
 			</div>
-			{#each ['red', 'white', 'sparkling', 'dessert', 'rose'] as const as type (type)}
+			{#each ['red', 'rose', 'white', 'sparkling', 'dessert'] as const as type (type)}
 				<button
 					onclick={() => setType(activeType === type ? null : type)}
 					aria-label={typeLabels[type]}
 					aria-pressed={activeType === type}
-					class="flex items-center justify-center w-9 h-9 rounded-full border-2
+					class="flex items-center justify-center w-10 h-10 rounded-full border-2
 						{activeType === type ? 'border-wine' : 'border-transparent'}"
 				>
-					<img src="/bottle-{type}.png" alt={typeLabels[type]} class="w-7 h-7 object-contain" />
+					<img src="/bottle-{type}.png" alt={typeLabels[type]} class="w-8 h-8 object-contain" />
 				</button>
 			{/each}
 			<button
