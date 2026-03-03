@@ -18,7 +18,11 @@ jobs:
           cache-dependency-path: app/package-lock.json
 
       - name: Install dependencies
-        run: npm ci
+        run: npm ci --ignore-scripts
+        working-directory: app
+
+      - name: Sync SvelteKit types
+        run: npx svelte-kit sync
         working-directory: app
 
       - name: Lint
