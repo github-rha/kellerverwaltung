@@ -1,4 +1,4 @@
-export type WineType = 'red' | 'white' | 'sparkling' | 'dessert'
+export type WineType = 'red' | 'white' | 'sparkling' | 'dessert' | 'rose'
 
 export interface HistoryEntry {
 	timestamp: string // ISO 8601

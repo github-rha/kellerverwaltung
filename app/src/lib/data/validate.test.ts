@@ -30,7 +30,7 @@ describe('validate', () => {
 	})
 
 	it('rejects invalid type value', () => {
-		const result = validate(validCellar({ type: 'rose' }))
+		const result = validate(validCellar({ type: 'orange' }))
 		expect(result.valid).toBe(false)
 	})
 

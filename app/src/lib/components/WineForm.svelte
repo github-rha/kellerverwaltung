@@ -32,7 +32,8 @@
 		{ value: 'red', label: 'Red' },
 		{ value: 'white', label: 'White' },
 		{ value: 'sparkling', label: 'Sparkling' },
-		{ value: 'dessert', label: 'Dessert' }
+		{ value: 'dessert', label: 'Dessert' },
+		{ value: 'rose', label: 'Rosé' }
 	]
 </script>
 

@@ -52,7 +52,7 @@
 		})
 		const params = $page.url.searchParams
 		const typeParam = params.get('type')
-		if (typeParam && ['red', 'white', 'sparkling', 'dessert'].includes(typeParam)) {
+		if (typeParam && ['red', 'white', 'sparkling', 'dessert', 'rose'].includes(typeParam)) {
 			activeType = typeParam as WineType
 		}
 		const producerParam = params.get('producer')
@@ -109,7 +109,8 @@
 		red: 'Red',
 		white: 'White',
 		sparkling: 'Sparkling',
-		dessert: 'Dessert'
+		dessert: 'Dessert',
+		rose: 'Rosé'
 	}
 
 	const sortLabels: Record<SortOption, string> = {
@@ -306,15 +307,15 @@
 					</div>
 				{/if}
 			</div>
-			{#each ['red', 'white', 'sparkling', 'dessert'] as const as type (type)}
+			{#each ['red', 'white', 'sparkling', 'dessert', 'rose'] as const as type (type)}
 				<button
 					onclick={() => setType(activeType === type ? null : type)}
 					aria-label={typeLabels[type]}
 					aria-pressed={activeType === type}
-					class="flex items-center justify-center w-10 h-10 rounded-full border-2
+					class="flex items-center justify-center w-9 h-9 rounded-full border-2
 						{activeType === type ? 'border-wine' : 'border-transparent'}"
 				>
-					<img src="/bottle-{type}.png" alt={typeLabels[type]} class="w-8 h-8 object-contain" />
+					<img src="/bottle-{type}.png" alt={typeLabels[type]} class="w-7 h-7 object-contain" />
 				</button>
 			{/each}
 			<button

@@ -107,7 +107,8 @@
 		red: 'Red',
 		white: 'White',
 		sparkling: 'Sparkling',
-		dessert: 'Dessert'
+		dessert: 'Dessert',
+		rose: 'Rosé'
 	}
 </script>
 

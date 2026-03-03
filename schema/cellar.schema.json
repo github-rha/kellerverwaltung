@@ -39,7 +39,7 @@
           "format": "uuid"
         },
         "type": {
-          "enum": ["red", "white", "sparkling", "dessert"]
+          "enum": ["red", "white", "sparkling", "dessert", "rose"]
         },
         "producer": {
           "type": "string",
