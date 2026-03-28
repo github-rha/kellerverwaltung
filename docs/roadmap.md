@@ -137,6 +137,17 @@ Plan: `docs/plan/v0.9.5-filter-ux.md`
 
 Plan: `docs/plan/v0.9.6-onboarding-filter-fix.md`
 
+## v0.9.10 — Session-persistent filters & Sommelier
+
+- Filters persist across navigation within a session (e.g. detail → back)
+- "Sommelier" button on dashboard: describe a dish in plain text, get AI-powered
+  wine pairing suggestions from your cellar (up to 10, ordered by best match)
+- Recommendations include "Querschläger" label (unconventional pick) and
+  "Drink now" label (wines at their ideal drinking window)
+- Uses existing Claude API key (Haiku); entire cellar sent for context
+
+Plan: `docs/plan/v0.9.10-session-filters-sommelier.md`
+
 ## Future (unscheduled)
 
 - Onboarding: first-run screen when sync is unconfigured, with instructions for

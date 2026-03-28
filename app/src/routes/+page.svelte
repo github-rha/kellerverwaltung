@@ -14,9 +14,11 @@
 	} from '$lib/data/filter-sort'
 	import type { SortOption, BottleFilter } from '$lib/data/filter-sort'
 	import type { WineType } from '$lib/data/types'
-	import { isConfigured, loadSettings } from '$lib/data/settings'
+	import { loadSessionFilters, saveSessionFilters } from '$lib/data/session-filters'
+	import { isConfigured, loadSettings, loadClaudeApiKey } from '$lib/data/settings'
 	import type { SyncSettings } from '$lib/data/settings'
 	import { push } from '$lib/data/sync'
+	import SommelierModal from '$lib/components/SommelierModal.svelte'
 
 	let ready = $state(false)
 	let showOnboarding = $state(false)
@@ -34,6 +36,9 @@
 	let syncing = $state(false)
 	let syncMsg: { kind: 'ok' | 'err' | 'blocked'; text: string } | null = $state(null)
 
+	let claudeApiKey = $state('')
+	let showSommelier = $state(false)
+
 	async function dismissOnboarding() {
 		await markOnboarded()
 		showOnboarding = false
@@ -42,6 +47,7 @@
 	onMount(async () => {
 		await initStore()
 		settings = await loadSettings()
+		claudeApiKey = await loadClaudeApiKey()
 		showOnboarding = !(await loadOnboarded())
 		online = navigator.onLine
 		window.addEventListener('online', () => {
@@ -50,6 +56,18 @@
 		window.addEventListener('offline', () => {
 			online = false
 		})
+
+		// Restore session filters first
+		const session = loadSessionFilters()
+		if (session) {
+			activeType = session.activeType
+			activeProducer = session.activeProducer
+			activeCountry = session.activeCountry
+			activeSort = session.activeSort
+			bottleFilter = session.bottleFilter
+		}
+
+		// URL params override session filters (e.g. "More from this producer" links)
 		const params = $page.url.searchParams
 		const typeParam = params.get('type')
 		if (typeParam && ['red', 'rose', 'white', 'sparkling', 'dessert'].includes(typeParam)) {
@@ -63,7 +81,23 @@
 		if (countryParam) {
 			activeCountry = countryParam
 		}
+		// Restore sommelier modal if it was open before navigating away
+		if (sessionStorage.getItem('kellerverwaltung-sommelier')) {
+			showSommelier = true
+		}
+
 		ready = true
+	})
+
+	$effect(() => {
+		if (!ready) return
+		saveSessionFilters({
+			activeType,
+			activeProducer,
+			activeCountry,
+			activeSort,
+			bottleFilter
+		})
 	})
 
 	let wines = $derived($cellarStore.wines)
@@ -210,11 +244,23 @@
 				</a>
 			</div>
 		</div>
-		<div class="mt-2 text-sm text-gray-500">
-			{#if isFiltered}
-				{filteredBottles} of {totalBottles} bottle{totalBottles !== 1 ? 's' : ''}
-			{:else}
-				{totalBottles} bottle{totalBottles !== 1 ? 's' : ''} total
+		<div class="mt-2 flex items-center justify-between">
+			<span class="text-sm text-gray-500">
+				{#if isFiltered}
+					{filteredBottles} of {totalBottles} bottle{totalBottles !== 1 ? 's' : ''}
+				{:else}
+					{totalBottles} bottle{totalBottles !== 1 ? 's' : ''} total
+				{/if}
+			</span>
+			{#if claudeApiKey}
+				<button
+					onclick={() => {
+						showSommelier = true
+					}}
+					class="px-3 py-1 text-xs font-medium rounded-full border border-gray-300 text-gray-700 active:bg-gray-100"
+				>
+					Sommelier
+				</button>
 			{/if}
 		</div>
 	</header>
@@ -411,6 +457,16 @@
 		{/if}
 	</main>
 </div>
+
+{#if showSommelier}
+	<SommelierModal
+		{wines}
+		apiKey={claudeApiKey}
+		onclose={() => {
+			showSommelier = false
+		}}
+	/>
+{/if}
 
 {#if showOnboarding}
 	<div
