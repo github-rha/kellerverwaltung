@@ -84,7 +84,7 @@ export async function runSommelierQuery(
 		},
 		body: JSON.stringify({
 			model: MODEL,
-			max_tokens: 1024,
+			max_tokens: 4096,
 			system: SYSTEM,
 			tools: [TOOL],
 			tool_choice: { type: 'tool', name: TOOL_NAME },
@@ -103,12 +103,17 @@ export async function runSommelierQuery(
 	}
 
 	const json = (await res.json()) as {
+		stop_reason?: string
 		content?: Array<{ type?: string; name?: string; input?: unknown }>
 	}
 	const block = json.content?.find((c) => c.type === 'tool_use' && c.name === TOOL_NAME)
 	const parsed = block?.input as { recommendations?: unknown } | undefined
 	if (!parsed || !Array.isArray(parsed.recommendations)) {
-		throw new Error('Could not parse sommelier response')
+		const stop = json.stop_reason ?? 'unknown'
+		const detail = !block
+			? `no tool_use block (stop_reason=${stop})`
+			: `tool_use block missing recommendations (stop_reason=${stop})`
+		throw new Error(`Could not parse sommelier response — ${detail}`)
 	}
 
 	return {
