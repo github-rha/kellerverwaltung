@@ -68,6 +68,7 @@
 		if (!name && pre.name) name = pre.name
 		if (!vintage && pre.vintage) vintage = pre.vintage
 		if (!country && result.country) country = result.country
+		if (result.type) type = result.type
 		ocrNote = 'Label read — review fields below.'
 	}
 

@@ -1,7 +1,12 @@
+import type { WineType } from '$lib/data/types'
+
 export interface OcrResult {
 	text: string
 	country?: string
+	type?: WineType
 }
+
+const WINE_TYPES: readonly WineType[] = ['red', 'white', 'sparkling', 'dessert', 'rose']
 
 const API_URL = 'https://api.anthropic.com/v1/messages'
 const MODEL = 'claude-haiku-4-5-20251001'
@@ -10,7 +15,8 @@ const SYSTEM = `You are a wine label reader. Extract:
 - name: wine name or cuvée
 - vintage: 4-digit year, or empty string if not visible
 - country: country of origin in English, or empty string if not visible
-Reply with ONLY valid JSON: {"producer":"...","name":"...","vintage":"...","country":"..."}`
+- type: one of "red", "white", "rose", "sparkling", "dessert", or empty string if not determinable
+Reply with ONLY valid JSON: {"producer":"...","name":"...","vintage":"...","country":"...","type":"..."}`
 
 const MAX_DIMENSION = 1568
 
@@ -78,5 +84,9 @@ export async function runClaudeOcr(blob: Blob, apiKey: string): Promise<OcrResul
 	const text = [fields.producer ?? '', fields.name ?? '', fields.vintage ?? '']
 		.filter(Boolean)
 		.join('\n')
-	return { text, country: fields.country ?? '' }
+	const rawType = (fields.type ?? '').toLowerCase().trim()
+	const type = (WINE_TYPES as readonly string[]).includes(rawType)
+		? (rawType as WineType)
+		: undefined
+	return { text, country: fields.country ?? '', type }
 }
