@@ -148,6 +148,19 @@ Plan: `docs/plan/v0.9.6-onboarding-filter-fix.md`
 
 Plan: `docs/plan/v0.9.10-session-filters-sommelier.md`
 
+## v1.0.0 — Sommelier tool-use & header tap feedback
+
+- Sommelier now uses Claude's tool_use feature instead of free-text JSON
+  output, eliminating parse errors caused by apostrophes / smart quotes /
+  mixed delimiters in producer or wine names
+- Drop the "at least 2 of each type" instruction from the sommelier prompt;
+  Querschläger requirement preserved
+- Add a red `border-wine` ring on the *Add wine* and *Settings* header
+  buttons while pressed, matching the type-filter pattern (visible feedback
+  for screen recordings)
+
+Plan: `docs/plan/v1.0.0-sommelier-tool-use-tap-feedback.md`
+
 ## Future (unscheduled)
 
 - Onboarding: first-run screen when sync is unconfigured, with instructions for

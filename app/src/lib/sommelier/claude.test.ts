@@ -52,6 +52,14 @@ beforeEach(() => {
 	vi.restoreAllMocks()
 })
 
+function toolUseResponse(input: unknown) {
+	return new Response(
+		JSON.stringify({
+			content: [{ type: 'tool_use', name: 'provide_recommendations', input }]
+		})
+	)
+}
+
 describe('runSommelierQuery', () => {
 	it('sends only in-stock wines to the API', async () => {
 		const wines = [
@@ -60,13 +68,7 @@ describe('runSommelierQuery', () => {
 			makeWine({ bottles: 1, name: 'Last One' })
 		]
 
-		const fetchSpy = vi.spyOn(globalThis, 'fetch').mockResolvedValue(
-			new Response(
-				JSON.stringify({
-					content: [{ type: 'text', text: JSON.stringify(mockResponse) }]
-				})
-			)
-		)
+		const fetchSpy = vi.spyOn(globalThis, 'fetch').mockResolvedValue(toolUseResponse(mockResponse))
 
 		await runSommelierQuery('pasta', wines, 'test-key')
 
@@ -77,20 +79,35 @@ describe('runSommelierQuery', () => {
 		expect(userMessage).not.toContain('Empty')
 	})
 
-	it('parses a valid sommelier response', async () => {
-		vi.spyOn(globalThis, 'fetch').mockResolvedValue(
-			new Response(
-				JSON.stringify({
-					content: [{ type: 'text', text: JSON.stringify(mockResponse) }]
-				})
-			)
-		)
+	it('parses a tool_use sommelier response', async () => {
+		vi.spyOn(globalThis, 'fetch').mockResolvedValue(toolUseResponse(mockResponse))
 
 		const result = await runSommelierQuery('steak', [makeWine()], 'test-key')
 		expect(result.recommendations).toHaveLength(3)
 		expect(result.recommendations[0].producer).toBe('Weingut Keller')
 		expect(result.recommendations[0].drinkNow).toBe(true)
 		expect(result.recommendations[2].querschlaeger).toBe(true)
+	})
+
+	it('parses tool_use input with apostrophes in names', async () => {
+		vi.spyOn(globalThis, 'fetch').mockResolvedValue(
+			toolUseResponse({
+				recommendations: [
+					{
+						producer: "Domaine d'Auvenay",
+						name: "L'Étoile",
+						vintage: '2018',
+						reason: "Crisp, focused — perfect for the dish's richness",
+						querschlaeger: false,
+						drinkNow: true
+					}
+				]
+			})
+		)
+
+		const result = await runSommelierQuery('coq au vin', [makeWine()], 'test-key')
+		expect(result.recommendations[0].producer).toBe("Domaine d'Auvenay")
+		expect(result.recommendations[0].name).toBe("L'Étoile")
 	})
 
 	it('throws on API error', async () => {
@@ -101,7 +118,7 @@ describe('runSommelierQuery', () => {
 		)
 	})
 
-	it('throws when response has no valid JSON', async () => {
+	it('throws when response has no tool_use block', async () => {
 		vi.spyOn(globalThis, 'fetch').mockResolvedValue(
 			new Response(
 				JSON.stringify({
@@ -115,14 +132,8 @@ describe('runSommelierQuery', () => {
 		)
 	})
 
-	it('sends request with correct headers and model', async () => {
-		const fetchSpy = vi.spyOn(globalThis, 'fetch').mockResolvedValue(
-			new Response(
-				JSON.stringify({
-					content: [{ type: 'text', text: JSON.stringify(mockResponse) }]
-				})
-			)
-		)
+	it('sends request with correct headers, model, and forced tool choice', async () => {
+		const fetchSpy = vi.spyOn(globalThis, 'fetch').mockResolvedValue(toolUseResponse(mockResponse))
 
 		await runSommelierQuery('salad', [makeWine()], 'my-api-key')
 
@@ -132,5 +143,7 @@ describe('runSommelierQuery', () => {
 		expect(headers['x-api-key']).toBe('my-api-key')
 		const body = JSON.parse(opts!.body as string)
 		expect(body.model).toBe('claude-opus-4-6')
+		expect(body.tool_choice).toEqual({ type: 'tool', name: 'provide_recommendations' })
+		expect(body.tools[0].name).toBe('provide_recommendations')
 	})
 })

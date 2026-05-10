@@ -216,7 +216,7 @@
 				{/if}
 				<a
 					href={resolve('/settings')}
-					class="flex items-center justify-center w-10 h-10 text-gray-400"
+					class="flex items-center justify-center w-10 h-10 rounded-full border-2 border-transparent text-gray-400 active:border-wine"
 					aria-label="Settings"
 				>
 					<svg
@@ -237,7 +237,7 @@
 				</a>
 				<a
 					href={resolve('/wine/new')}
-					class="flex items-center justify-center w-10 h-10"
+					class="flex items-center justify-center w-10 h-10 rounded-full border-2 border-transparent active:border-wine"
 					aria-label="Add wine"
 				>
 					<img src="/bottle-plus.png" alt="" class="w-8 h-8 object-contain" />

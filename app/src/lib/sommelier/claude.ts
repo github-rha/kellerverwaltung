@@ -22,13 +22,40 @@ The user will describe a dish or food they want to pair with wine. You will also
 
 Your task:
 1. First, determine which wine type(s) classically pair with the described dish using traditional sommelier principles (e.g. white or rosé with poultry and fish, red with red meat and hearty stews, sparkling as a versatile aperitif pairing). Do not default to red — let the dish guide the type.
-2. Recommend up to 10 wines from the provided cellar, ordered by how well they pair with the dish. Prioritize the classically matching type(s), but include at least 2 of each type available in the cellar (red, white, rosé, sparkling) to offer variety. Dessert wines may be included when they genuinely complement the dish.
-3. Among wines that pair equally well, use the drinkability window as a tiebreaker: prefer wines at or near their ideal drinking window. Mark those with "drinkNow": true. But a perfect pairing that is slightly young still ranks above a mediocre pairing that is ready to drink.
-4. Include exactly one "Querschläger" — an unconventional, unexpected choice that could work surprisingly well. Place it somewhere in the middle of the list (not position 1 or 2). Mark it with "querschlaeger": true.
+2. Recommend up to 10 wines from the provided cellar, ordered by how well they pair with the dish. Dessert wines may be included when they genuinely complement the dish.
+3. Among wines that pair equally well, use the drinkability window as a tiebreaker: prefer wines at or near their ideal drinking window. Mark those with drinkNow=true. But a perfect pairing that is slightly young still ranks above a mediocre pairing that is ready to drink.
+4. Include exactly one "Querschläger" — an unconventional, unexpected choice that could work surprisingly well. Place it somewhere in the middle of the list (not position 1 or 2). Mark it with querschlaeger=true.
 5. For each recommendation, provide a concise one-line reason explaining why it pairs well.
 
-Reply with ONLY valid JSON in this format:
-{"recommendations":[{"producer":"...","name":"...","vintage":"...","reason":"...","querschlaeger":false,"drinkNow":false}]}`
+Use the provide_recommendations tool to return the result.`
+
+const TOOL_NAME = 'provide_recommendations'
+
+const TOOL = {
+	name: TOOL_NAME,
+	description: 'Return the ranked list of wine pairing recommendations from the cellar.',
+	input_schema: {
+		type: 'object',
+		properties: {
+			recommendations: {
+				type: 'array',
+				items: {
+					type: 'object',
+					properties: {
+						producer: { type: 'string' },
+						name: { type: 'string' },
+						vintage: { type: 'string' },
+						reason: { type: 'string' },
+						querschlaeger: { type: 'boolean' },
+						drinkNow: { type: 'boolean' }
+					},
+					required: ['producer', 'name', 'vintage', 'reason', 'querschlaeger', 'drinkNow']
+				}
+			}
+		},
+		required: ['recommendations']
+	}
+}
 
 function buildWineList(wines: WineEntry[]): string {
 	return wines
@@ -59,6 +86,8 @@ export async function runSommelierQuery(
 			model: MODEL,
 			max_tokens: 1024,
 			system: SYSTEM,
+			tools: [TOOL],
+			tool_choice: { type: 'tool', name: TOOL_NAME },
 			messages: [
 				{
 					role: 'user',
@@ -73,16 +102,13 @@ export async function runSommelierQuery(
 		throw new Error(`Claude API error ${res.status}: ${body}`)
 	}
 
-	const json = await res.json()
-	const rawText: string = json.content?.[0]?.text ?? ''
-	const match = rawText.match(/\{[\s\S]*\}/)
-	if (!match) {
-		throw new Error('Could not parse sommelier response')
+	const json = (await res.json()) as {
+		content?: Array<{ type?: string; name?: string; input?: unknown }>
 	}
-
-	const parsed = JSON.parse(match[0])
-	if (!Array.isArray(parsed.recommendations)) {
-		throw new Error('Invalid sommelier response format')
+	const block = json.content?.find((c) => c.type === 'tool_use' && c.name === TOOL_NAME)
+	const parsed = block?.input as { recommendations?: unknown } | undefined
+	if (!parsed || !Array.isArray(parsed.recommendations)) {
+		throw new Error('Could not parse sommelier response')
 	}
 
 	return {
