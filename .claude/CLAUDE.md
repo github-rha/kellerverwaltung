@@ -1,5 +1,11 @@
 # Kellerverwaltung
 
+> Note: the rules in this directory are project-specific. They are layered on
+> top of a shared rule set maintained privately and applied across multiple
+> projects (general conventions for git, dependencies, secrets, verification,
+> journaling, etc.). That central config is not part of this open-source repo,
+> so some referenced conventions live outside it.
+
 Personal wine cellar tracker for a single user. iPhone PWA (Safari "Add to Home Screen"), offline-first, no App Store.
 
 ## Core functionality
