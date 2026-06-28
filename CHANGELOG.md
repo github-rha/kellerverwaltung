@@ -16,6 +16,117 @@
 - Remote photos are validated as AVIF before being stored on pull
 - CI workflow no longer references the removed `worktree-ocr-fix` branch
 
+## v1.0.0 — Sommelier tool-use + header tap feedback (2026-05-10)
+
+### Changed
+
+- Sommelier uses Claude's `tool_use` instead of free-text JSON output, eliminating parse errors from apostrophes / smart quotes / mixed delimiters in producer or wine names
+- Dropped the "at least 2 of each type" instruction from the sommelier prompt (Querschläger requirement kept)
+
+### Added
+
+- Pressed-state `border-wine` ring on the Add wine and Settings header buttons, matching the type-filter feedback pattern
+
+## v0.9.10 — Session-persistent filters + Sommelier (2026-03-28)
+
+### Added
+
+- Filters persist across navigation within a session (e.g. detail → back)
+- "Sommelier" button: describe a dish in plain text, get AI wine-pairing suggestions from the cellar (up to 10, ordered by best match)
+- Recommendations include "Querschläger" (unconventional pick) and "Drink now" (ideal drinking window) labels
+- Uses the existing Claude API key; entire cellar sent as context
+
+## v0.9.9 — Review fixes + quality label (2026-03-03)
+
+### Fixed
+
+- `sortWines()` now has a default return (no longer returns undefined for an unexpected sort value)
+- `runClaudeOcr` wraps `JSON.parse` in try/catch (no uncaught exception on unexpected Claude output)
+
+### Removed
+
+- Dead `OcrResult.words` field
+
+### Added
+
+- haeusler-wein.ch quality label in Settings
+
+## v0.9.8 — Rosé wine type (2026-03-03)
+
+### Added
+
+- `rose` as a fifth wine type throughout (schema, types, form, filter bar, `bottle-rose.png`)
+
+### Changed
+
+- Shrunk bottle filter buttons so all five types fit on one line on a standard iPhone
+
+## v0.9.7 — Filter row reorder + cycling sort (2026-03-02)
+
+### Changed
+
+- Reordered filter row: filter dropdown → bottle images → sort button
+- Replaced the sort dropdown with a single button that cycles vintage ↓ → vintage ↑ → newest
+
+## v0.9.6 — Onboarding + filter fix (2026-03-01)
+
+### Added
+
+- First-run onboarding overlay (shown once, dismissed with "Get started")
+- "Finito" label for sold-out wines
+
+### Fixed
+
+- Filter dropdown no longer runs off-screen (Filter + Sort moved left of the bottle images)
+
+## v0.9.5 — Filter UX improvements (2026-03-01)
+
+### Changed
+
+- Filter button shows a funnel icon instead of "Filter" text
+- Dropped the "Oldest" sort option (kept Vintage ↓, Vintage ↑, Newest)
+- Reordered filter panel: Bottles, then Producer, Country
+- Producer and Country filters became autocomplete text inputs
+
+## v0.9.4 — Single filter row (2026-03-01)
+
+### Changed
+
+- Merged the bottle-type image buttons and the Filter/Sort pills onto one row
+
+## v0.9.3 — Sync UX + inventory path (2026-03-01)
+
+### Changed
+
+- Replaced dashboard Push/Pull with a single push-only "Sync" button
+- Sync blocked when the local cellar has fewer than 10 wines (guards against accidental overwrite)
+- Moved pull/restore to Settings as "Restore from GitHub"
+- Inventory files stored as `inventory/YYYY-MM-DD-cellar-list.txt`
+
+## v0.9.2 — Import + export (2026-03-01)
+
+### Changed
+
+- Moved CSV import from the dashboard header into Settings
+
+### Added
+
+- One-tap "Export to GitHub" in Settings: pushes a print-ready `cellar-list.txt` (producer, name, vintage, bottles for in-stock wines)
+
+## v0.9.1 — Bottle image filters + add button (2026-03-01)
+
+### Changed
+
+- Replaced the Red/White/Sparkling/Dessert text filter pills with `bottle-{type}.png` images
+- Replaced the "+" add button with `bottle-plus.png`
+
+## v0.9.0 — Visual redesign (2026-02-28)
+
+### Changed
+
+- New palette inspired by haeusler-wein.ch: brick-red accent `#A62A17`, warm-grey text `#575757`, subtle red-tinted borders
+- PWA icon switched to the Turmfalke (kestrel) mark
+
 ## v0.8.0 — UI tweaks + bottle history (2026-02-28)
 
 ### Added

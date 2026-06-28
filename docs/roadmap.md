@@ -82,7 +82,7 @@ Plan: `docs/plan/v0.7.0-ocr-prefill.md`
 
 Plan: `docs/plan/v0.8.0-ui-tweaks-bottle-history.md`
 
-## v0.9.0 — Visual redesign
+## v0.9.0 — Visual redesign ✓
 
 UI inspired by [haeusler-wein.ch](https://haeusler-wein.ch) (source: https://github.com/github-rha/haeusler-wein).
 
@@ -91,14 +91,14 @@ UI inspired by [haeusler-wein.ch](https://haeusler-wein.ch) (source: https://git
 - **Borders/dividers**: `rgba(166, 42, 23, 0.2)` subtle red tint
 - **PWA icon**: the Turmfalke (kestrel falcon) from `images/turmfalke.png` in haeusler-wein
 
-## v0.9.1 — Bottle image filters and add button
+## v0.9.1 — Bottle image filters and add button ✓
 
 - Replace Red/White/Sparkling/Dessert text filter pills with `bottle-{type}.png` images
 - Replace the "+" add button with `bottle-plus.png`
 
 Plan: `docs/plan/v0.9.1-bottle-image-filters.md`
 
-## v0.9.2 — Import & export
+## v0.9.2 — Import & export ✓
 
 - Move CSV import from dashboard header into Settings
 - Add one-tap "Export to GitHub" in Settings: pushes `cellar-list.txt` (plain
@@ -106,7 +106,7 @@ Plan: `docs/plan/v0.9.1-bottle-image-filters.md`
 
 Plan: `docs/plan/v0.9.2-import-export.md`
 
-## v0.9.3 — Sync UX & inventory path
+## v0.9.3 — Sync UX & inventory path ✓
 
 - Replace Push/Pull buttons on dashboard with a single Sync button (push-only)
 - Sync blocked if local cellar has fewer than 10 wines (prevents accidental overwrite)
@@ -115,13 +115,13 @@ Plan: `docs/plan/v0.9.2-import-export.md`
 
 Plan: `docs/plan/v0.9.3-sync-ux.md`
 
-## v0.9.4 — Single filter row
+## v0.9.4 — Single filter row ✓
 
 - Merge bottle type image buttons and Filter/Sort pills onto one line
 
 Plan: `docs/plan/v0.9.4-filter-row.md`
 
-## v0.9.5 — Filter UX improvements
+## v0.9.5 — Filter UX improvements ✓
 
 - Filter button shows funnel icon instead of "Filter" text
 - Drop "Oldest" sort option; keep Vintage ↓, Vintage ↑, Newest
@@ -130,14 +130,35 @@ Plan: `docs/plan/v0.9.4-filter-row.md`
 
 Plan: `docs/plan/v0.9.5-filter-ux.md`
 
-## v0.9.6 — Onboarding screen & filter dropdown fix
+## v0.9.6 — Onboarding screen & filter dropdown fix ✓
 
 - First-run onboarding overlay (shown once, dismissed with "Get started")
 - Fix filter dropdown going off-screen: move Filter + Sort to left of bottle images
 
 Plan: `docs/plan/v0.9.6-onboarding-filter-fix.md`
 
-## v0.9.10 — Session-persistent filters & Sommelier
+## v0.9.7 — Filter row reorder & cycling sort ✓
+
+- Reorder filter row: filter dropdown → bottle images → sort button
+- Replace the sort dropdown with a single button that cycles vintage ↓ → vintage ↑ → newest
+
+Plan: `docs/plan/v0.9.7-filter-row-cycle-sort.md`
+
+## v0.9.8 — Rosé wine type ✓
+
+- Add `rose` as a fifth wine type throughout (schema, types, form, filter bar)
+- Shrink bottle filter buttons so all five types fit on one line
+
+Plan: `docs/plan/v0.9.8-rose-type.md`
+
+## v0.9.9 — Review fixes & quality label ✓
+
+- Default return in `sortWines()`; try/catch around OCR `JSON.parse`; remove dead `OcrResult.words`
+- haeusler-wein.ch quality label in Settings
+
+Plan: `docs/plan/v0.9.9-review-and-label.md`
+
+## v0.9.10 — Session-persistent filters & Sommelier ✓
 
 - Filters persist across navigation within a session (e.g. detail → back)
 - "Sommelier" button on dashboard: describe a dish in plain text, get AI-powered
@@ -148,7 +169,7 @@ Plan: `docs/plan/v0.9.6-onboarding-filter-fix.md`
 
 Plan: `docs/plan/v0.9.10-session-filters-sommelier.md`
 
-## v1.0.0 — Sommelier tool-use & header tap feedback
+## v1.0.0 — Sommelier tool-use & header tap feedback ✓
 
 - Sommelier now uses Claude's tool_use feature instead of free-text JSON
   output, eliminating parse errors caused by apostrophes / smart quotes /
