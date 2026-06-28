@@ -10,6 +10,9 @@ const config = {
 			mode: 'auto',
 			directives: {
 				'default-src': ['self'],
+				// 'unsafe-eval' is required because Ajv compiles the JSON schema with
+				// new Function() at runtime; connect-src below still blocks exfiltration
+				'script-src': ['self', 'unsafe-eval'],
 				'connect-src': ['self', 'https://api.github.com', 'https://api.anthropic.com'],
 				'img-src': ['self', 'data:', 'blob:'],
 				'style-src': ['self', 'unsafe-inline'],
