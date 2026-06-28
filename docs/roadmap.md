@@ -161,6 +161,15 @@ Plan: `docs/plan/v0.9.10-session-filters-sommelier.md`
 
 Plan: `docs/plan/v1.0.0-sommelier-tool-use-tap-feedback.md`
 
+## v1.0.1 — Security hardening ✓
+
+- Content-Security-Policy added (`connect-src` limited to GitHub + Anthropic;
+  `script-src` allows `unsafe-eval` for Ajv's runtime schema compilation)
+- Settings recommends a fine-grained, repo-scoped GitHub token instead of a
+  classic `repo`-scope token
+- Remote photos validated as AVIF before being stored on pull
+- Sommelier model upgraded to `claude-opus-4-8`
+
 ## Future (unscheduled)
 
 - Onboarding: first-run screen when sync is unconfigured, with instructions for
