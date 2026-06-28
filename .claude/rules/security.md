@@ -1,0 +1,2 @@
+- Never render user-provided strings as raw HTML — use Svelte's default escaping
+- Sanitize any data before writing to IndexedDB or sending to GitHub API
