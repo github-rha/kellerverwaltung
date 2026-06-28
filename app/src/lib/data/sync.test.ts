@@ -40,7 +40,7 @@ function bufferToBase64(buffer: ArrayBuffer): string {
 const emptyCellar: Cellar = { schemaVersion: 1, wines: [] }
 
 // Minimal AVIF: ISO-BMFF 'ftyp' box with 'avif' brand, plus a few payload bytes.
-function avifBytes(): Uint8Array {
+function avifBytes() {
 	return new Uint8Array([
 		0x00, 0x00, 0x00, 0x20, 0x66, 0x74, 0x79, 0x70, 0x61, 0x76, 0x69, 0x66, 0x10, 0x20, 0x30
 	])
