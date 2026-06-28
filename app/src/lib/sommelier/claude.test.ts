@@ -142,7 +142,7 @@ describe('runSommelierQuery', () => {
 		const headers = opts!.headers as Record<string, string>
 		expect(headers['x-api-key']).toBe('my-api-key')
 		const body = JSON.parse(opts!.body as string)
-		expect(body.model).toBe('claude-opus-4-6')
+		expect(body.model).toBe('claude-opus-4-8')
 		expect(body.tool_choice).toEqual({ type: 'tool', name: 'provide_recommendations' })
 		expect(body.tools[0].name).toBe('provide_recommendations')
 	})

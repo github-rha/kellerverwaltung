@@ -143,7 +143,10 @@
 				autocomplete="off"
 				class="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm text-[#575757] placeholder-gray-400 focus:border-wine focus:outline-none"
 			/>
-			<p class="mt-1 text-xs text-gray-500">Needs <code>repo</code> scope on the data repository</p>
+			<p class="mt-1 text-xs text-gray-500">
+				Use a fine-grained token scoped to only the data repository, with
+				<code>Contents</code> read/write permission
+			</p>
 		</div>
 
 		<div>

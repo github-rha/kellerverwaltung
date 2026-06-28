@@ -14,7 +14,7 @@ export interface SommelierResult {
 }
 
 const API_URL = 'https://api.anthropic.com/v1/messages'
-const MODEL = 'claude-opus-4-6'
+const MODEL = 'claude-opus-4-8'
 
 const SYSTEM = `You are an expert sommelier advising a wine enthusiast with a western/central European palate.
 

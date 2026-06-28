@@ -43,6 +43,18 @@ function decodeBase64ToBytes(b64: string): Uint8Array {
 	return bytes
 }
 
+// AVIF files are ISO-BMFF: bytes 4-8 hold the 'ftyp' box type. Guards against
+// storing tampered or corrupt blobs pulled from the remote repo.
+export function looksLikeAvif(bytes: Uint8Array): boolean {
+	return (
+		bytes.length >= 12 &&
+		bytes[4] === 0x66 && // f
+		bytes[5] === 0x74 && // t
+		bytes[6] === 0x79 && // y
+		bytes[7] === 0x70 // p
+	)
+}
+
 // --- GitHub API helpers ---
 
 function apiUrl(repo: string, path: string): string {
@@ -154,6 +166,7 @@ async function _pull(settings: SyncSettings): Promise<void> {
 		const photoMeta = await getFileMeta(settings.repo, settings.pat, `data/photos/${wine.id}.avif`)
 		if (!photoMeta) continue
 		const photoBytes = decodeBase64ToBytes(photoMeta.content)
+		if (!looksLikeAvif(photoBytes)) continue
 		await savePhotoBuffer(wine.id, photoBytes.buffer as ArrayBuffer)
 	}
 

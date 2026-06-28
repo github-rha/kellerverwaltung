@@ -3,7 +3,7 @@ import { get as storeGet } from 'svelte/store'
 import { clear } from 'idb-keyval'
 import { createWine, initStore, updateWine } from './store'
 import { loadCellar, loadPhoto, savePhoto, unsyncedStore } from './persist'
-import { SyncError, forcePull, pull, push } from './sync'
+import { SyncError, forcePull, looksLikeAvif, pull, push } from './sync'
 import type { SyncSettings } from './settings'
 import type { Cellar } from './types'
 
@@ -38,6 +38,13 @@ function bufferToBase64(buffer: ArrayBuffer): string {
 }
 
 const emptyCellar: Cellar = { schemaVersion: 1, wines: [] }
+
+// Minimal AVIF: ISO-BMFF 'ftyp' box with 'avif' brand, plus a few payload bytes.
+function avifBytes(): Uint8Array {
+	return new Uint8Array([
+		0x00, 0x00, 0x00, 0x20, 0x66, 0x74, 0x79, 0x70, 0x61, 0x76, 0x69, 0x66, 0x10, 0x20, 0x30
+	])
+}
 
 function fakePhotoBlob(): Blob {
 	const buffer = new Uint8Array([1, 2, 3, 4]).buffer
@@ -204,7 +211,7 @@ describe('pull', () => {
 	})
 
 	it('downloads photos referenced in pulled cellar', async () => {
-		const photoBytes = new Uint8Array([10, 20, 30])
+		const photoBytes = avifBytes()
 		const wineId = 'a1b2c3d4-e5f6-7890-abcd-ef1234567890'
 		const remoteCellar: Cellar = {
 			schemaVersion: 1,
@@ -239,6 +246,42 @@ describe('pull', () => {
 		const photo = await loadPhoto(wineId)
 		expect(photo).toBeDefined()
 		expect(photo).toBeInstanceOf(Blob)
+	})
+
+	it('skips a remote photo whose bytes are not a valid AVIF', async () => {
+		const wineId = 'a1b2c3d4-e5f6-7890-abcd-ef1234567890'
+		const remoteCellar: Cellar = {
+			schemaVersion: 1,
+			wines: [
+				{
+					id: wineId,
+					type: 'red',
+					producer: 'P',
+					producerKey: 'p',
+					name: 'N',
+					vintage: 2020,
+					bottles: 1,
+					notes: '',
+					country: '',
+					photoRef: `photos/${wineId}.avif`,
+					addedAt: '2025-01-01T00:00:00Z'
+				}
+			]
+		}
+
+		mockFetch
+			.mockResolvedValueOnce(
+				jsonResponse({ sha: 'sha1', content: textToBase64(JSON.stringify(remoteCellar)) })
+			)
+			.mockResolvedValueOnce(
+				jsonResponse({ sha: 'sha2', content: bufferToBase64(new Uint8Array([1, 2, 3, 4]).buffer) })
+			)
+			.mockResolvedValueOnce(notFound()) // GET ocr-training.json
+
+		await pull(settings)
+
+		const photo = await loadPhoto(wineId)
+		expect(photo).toBeUndefined()
 	})
 
 	it('deletes local photos not present in pulled cellar', async () => {
@@ -296,6 +339,20 @@ describe('pull', () => {
 		await pull(settings)
 
 		expect(storeGet(unsyncedStore)).toBe(false)
+	})
+})
+
+describe('looksLikeAvif', () => {
+	it('accepts bytes with an ftyp box header', () => {
+		expect(looksLikeAvif(avifBytes())).toBe(true)
+	})
+
+	it('rejects bytes without an ftyp box header', () => {
+		expect(looksLikeAvif(new Uint8Array([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]))).toBe(false)
+	})
+
+	it('rejects bytes shorter than a box header', () => {
+		expect(looksLikeAvif(new Uint8Array([0x66, 0x74, 0x79, 0x70]))).toBe(false)
 	})
 })
 

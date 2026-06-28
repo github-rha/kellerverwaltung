@@ -1,5 +1,21 @@
 # Changelog
 
+## v1.0.1 — Security hardening (2026-06-28)
+
+### Security
+
+- Content-Security-Policy added; `connect-src` restricted to `api.github.com` and `api.anthropic.com` to limit exfiltration of the stored GitHub token and Anthropic API key
+- Settings now recommends a fine-grained GitHub token scoped to the data repository (`Contents` read/write) instead of a classic `repo`-scope token
+
+### Changed
+
+- Sommelier model upgraded to `claude-opus-4-8`
+
+### Fixed
+
+- Remote photos are validated as AVIF before being stored on pull
+- CI workflow no longer references the removed `worktree-ocr-fix` branch
+
 ## v0.8.0 — UI tweaks + bottle history (2026-02-28)
 
 ### Added
