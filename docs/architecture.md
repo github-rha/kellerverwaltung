@@ -27,7 +27,7 @@
                            │ HTTPS + PAT (manual sync only)
                            ▼
                 ┌──────────────────────┐
-                │  GitHub (private repo)│
+                │ GitHub (private repo)│
                 │                      │
                 │  data/cellar.json    │
                 │  data/photos/*.avif  │
@@ -58,7 +58,7 @@ data layer.
 
 ```
 ┌──────────────────────────────────────────────────────────────┐
-│                          UI layer                             │
+│                          UI layer                            │
 │                                                              │
 │  ┌──────────────────────────┐     ┌────────────────────────┐ │
 │  │  Dashboard               │     │  Wine detail           │ │
@@ -78,9 +78,9 @@ data layer.
 │  │  • Add wine button ──────│──┐                             │
 │  │                          │  │  ┌────────────────────────┐ │
 │  │  • sync controls         │  └─>│  Add wine              │ │
-│  │    (or "set up sync"     │ new │  • all fields           │ │
-│  │     if unconfigured)     │<────│  • photo capture        │ │
-│  └────────────┬─────────────┘save │  • save / cancel        │ │
+│  │    (or "set up sync"     │ new │  • all fields          │ │
+│  │     if unconfigured)     │<────│  • photo capture       │ │
+│  └────────────┬─────────────┘save │  • save / cancel       │ │
 │               │                   └────────────────────────┘ │
 │               │                   ┌────────────────────────┐ │
 │               │  gear icon        │  Settings              │ │
@@ -105,10 +105,10 @@ Manages in-memory state, validates changes, and mediates between UI and
 storage.
 
 ```
-┌─────────────────────────────────────────────┐
+┌──────────────────────────────────────────────┐
 │                 Data layer                   │
-│                                             │
-│  ┌────────────┐  ┌───────────────────────┐  │
+│                                              │
+│  ┌─────────────┐  ┌───────────────────────┐  │
 │  │  Wine       │  │  Sync engine          │  │
 │  │  Store      │  │                       │  │
 │  │  (CRUD +    │  │  push()  pull()       │  │
@@ -120,7 +120,7 @@ storage.
 │  │      Schema validation               │    │
 │  │      (cellar.schema.json v1)         │    │
 │  └──────────────────────────────────────┘    │
-└─────────────────────────────────────────────┘
+└──────────────────────────────────────────────┘
 ```
 
 - **Wine store**: CRUD on `WineEntry` objects — create, update fields,
@@ -135,23 +135,23 @@ storage.
 Persists data locally and provides the interface for remote sync.
 
 ```
-┌─────────────────────────────────────────────────────────┐
+┌──────────────────────────────────────────────────────────┐
 │                    Storage layer                         │
-│                                                         │
-│  ┌─────────────────────┐   ┌─────────────────────────┐  │
-│  │  Local persistence   │   │  Remote persistence     │  │
-│  │                      │   │                          │  │
-│  │  IndexedDB            │   │  GitHub Contents API    │  │
-│  │  • cellar.json blob  │   │  • data/cellar.json     │  │
-│  │  • photo blobs       │   │  • data/photos/*.avif   │  │
-│  └─────────────────────┘   └─────────────────────────┘  │
-│                                                         │
+│                                                          │
+│  ┌─────────────────────┐   ┌──────────────────────────┐  │
+│  │  Local persistence  │   │  Remote persistence      │  │
+│  │                     │   │                          │  │
+│  │  IndexedDB          │   │  GitHub Contents API     │  │
+│  │  • cellar.json blob │   │  • data/cellar.json      │  │
+│  │  • photo blobs      │   │  • data/photos/*.avif    │  │
+│  └─────────────────────┘   └──────────────────────────┘  │
+│                                                          │
 │  ┌─────────────────────────────────────────────────────┐ │
 │  │  Service Worker                                     │ │
 │  │  • Caches app shell for offline launch              │ │
 │  │  • Does NOT cache data (data lives in IndexedDB)    │ │
 │  └─────────────────────────────────────────────────────┘ │
-└─────────────────────────────────────────────────────────┘
+└──────────────────────────────────────────────────────────┘
 ```
 
 > **Future option**: if photo storage outgrows IndexedDB performance,
@@ -240,17 +240,17 @@ They are committed as regular git blobs (no Git LFS).
   │            │               │  read cellar.json│                │
   │            │               │─────────────────>│                │
   │            │               │                  │                │
-  │            │               │  PUT photos/*.avif (new/changed) │
-  │            │               │────────────────────────────────->│
-  │            │               │  PUT data/cellar.json            │
-  │            │               │────────────────────────────────->│
-  │            │               │                          200 OK  │
-  │            │               │<─────────────────────────────────│
-  │            │               │  hasUnsynced=false               │
-  │            │               │──────┐                           │
-  │            │  sync complete│<─────┘                           │
-  │  confirm   │<──────────────│                                  │
-  │<───────────│               │                                  │
+  │            │               │  PUT photos/*.avif (new/changed)  │
+  │            │               │──────────────────────────────────>│
+  │            │               │  PUT data/cellar.json             │
+  │            │               │──────────────────────────────────>│
+  │            │               │                  │       200 OK   │
+  │            │               │<──────────────────────────────────│
+  │            │               │  hasUnsynced=false                │
+  │            │               │──────┐           │                │
+  │            │ sync complete │<─────┘           │                │
+  │  confirm   │<──────────────│                  │                │
+  │<───────────│               │                  │                │
 ```
 
 ### 4. Pull from GitHub
@@ -262,26 +262,26 @@ They are committed as regular git blobs (no Git LFS).
   │───────────>│               │                  │                │
   │            │  pull()       │                  │                │
   │            │──────────────>│                  │                │
-  │            │               │  check hasUnsyncedChanges        │
-  │            │               │──────┐                           │
-  │            │               │<─────┘                           │
-  │            │               │                                  │
-  │            │               │── if unsynced: BLOCK ──>│        │
-  │            │               │   (user must push first │        │
-  │            │               │    or force-pull)       │        │
-  │            │               │                         │        │
-  │            │               │── if clean: ────────────┘        │
-  │            │               │  GET data/cellar.json            │
-  │            │               │────────────────────────────────->│
-  │            │               │  GET data/photos/*.avif          │
-  │            │               │────────────────────────────────->│
-  │            │               │                    data + photos │
-  │            │               │<─────────────────────────────────│
-  │            │               │  overwrite local  │              │
-  │            │               │─────────────────->│              │
-  │            │  sync complete│                   │              │
-  │  confirm   │<──────────────│                   │              │
-  │<───────────│               │                   │              │
+  │            │               │  check hasUnsyncedChanges         │
+  │            │               │──────┐           │                │
+  │            │               │<─────┘           │                │
+  │            │               │                  │                │
+  │            │               │── if unsynced: BLOCK ──>│         │
+  │            │               │   (user must push first │         │
+  │            │               │    or force-pull)       │         │
+  │            │               │                         │         │
+  │            │               │── if clean: ────────────┘         │
+  │            │               │  GET data/cellar.json             │
+  │            │               │──────────────────────────────────>│
+  │            │               │  GET data/photos/*.avif           │
+  │            │               │──────────────────────────────────>│
+  │            │               │                  │  data + photos │
+  │            │               │<──────────────────────────────────│
+  │            │               │  overwrite local │                │
+  │            │               │─────────────────>│                │
+  │            │ sync complete │                  │                │
+  │  confirm   │<──────────────│                  │                │
+  │<───────────│               │                  │                │
 ```
 
 ### 5. Capture photo
@@ -328,8 +328,8 @@ They are committed as regular git blobs (no Git LFS).
                   └────────────┬─────────────┘
                                │
                   ┌────────────▼─────────────┐
-              ┌───│  Network available?      │───┐
-              │   └──────────────────────────┘   │
+              ┌───│  Network available?      │────┐
+              │   └──────────────────────────┘    │
              yes                                  no
               │                                   │
   ┌───────────▼──────────┐          ┌─────────────▼──────────┐
@@ -364,17 +364,17 @@ single JSON document loaded into memory, mutated, and written back
 atomically. This keeps code trivial and sidesteps partial-update bugs.
 
 ```
-  ┌─────────────┐     read/write      ┌──────────────┐
+  ┌──────────────┐     read/write      ┌──────────────┐
   │  In-memory   │◄───────────────────►│  IndexedDB   │
   │  cellar.json │     (full doc)      │  (blob key)  │
   └──────┬───────┘                     └──────────────┘
          │
          │  on mutate: validate → save → notify UI
          ▼
-  ┌─────────────┐
+  ┌──────────────┐
   │  Reactive UI │
   │  (re-render) │
-  └─────────────┘
+  └──────────────┘
 ```
 
 **Optimistic UI** — count adjustments and edits update the screen
@@ -461,10 +461,10 @@ simple, correct, and appropriate for a single-device app.
   push / PR to main
         │
         ▼
-  ┌─────────────────────────────────────────────┐
+  ┌──────────────────────────────────────────────┐
   │  GitHub Actions                              │
   │                                              │
-  │  ┌─────────────┐  ┌──────────────────────┐  │
+  │  ┌──────────────┐  ┌──────────────────────┐  │
   │  │ Lint + types │  │ Schema validation    │  │
   │  │ (parallel)   │  │ (ajv against         │  │
   │  │              │  │  examples/*.json)    │  │
@@ -472,24 +472,24 @@ simple, correct, and appropriate for a single-device app.
   │         │                     │              │
   │         └──────────┬──────────┘              │
   │                    ▼                         │
-  │         ┌──────────────────┐                 │
-  │         │ Unit + integration│                 │
-  │         │ tests (Vitest)    │                 │
-  │         └────────┬─────────┘                 │
-  │                  ▼                           │
-  │         ┌──────────────────┐                 │
-  │         │ Build (Vite)     │                 │
-  │         └────────┬─────────┘                 │
-  │                  ▼                           │
-  │         ┌──────────────────┐                 │
-  │         │ E2E (Playwright) │                 │
-  │         │ (WebKit only)    │                 │
-  │         └────────┬─────────┘                 │
-  │                  ▼                           │
-  │         ┌──────────────────┐                 │
-  │         │ Deploy to Pages  │  (main only)    │
-  │         └──────────────────┘                 │
-  └─────────────────────────────────────────────┘
+  │         ┌────────────────────┐               │
+  │         │ Unit + integration │               │
+  │         │ tests (Vitest)     │               │
+  │         └──────────┬─────────┘               │
+  │                    ▼                         │
+  │         ┌────────────────────┐               │
+  │         │ Build (Vite)       │               │
+  │         └──────────┬─────────┘               │
+  │                    ▼                         │
+  │         ┌────────────────────┐               │
+  │         │ E2E (Playwright)   │               │
+  │         │ (WebKit only)      │               │
+  │         └──────────┬─────────┘               │
+  │                    ▼                         │
+  │         ┌────────────────────┐               │
+  │         │ Deploy to Pages    │  (main only)  │
+  │         └────────────────────┘               │
+  └──────────────────────────────────────────────┘
 ```
 
 - Lint, type-check, and schema validation run in parallel.
@@ -503,7 +503,7 @@ simple, correct, and appropriate for a single-device app.
 ### Authentication & authorization
 
 ```
-  ┌───────────┐        ┌──────────────────┐        ┌──────────────┐
+  ┌────────────┐        ┌──────────────────┐        ┌──────────────┐
   │  iPhone    │        │  GitHub Pages    │        │  GitHub API  │
   │  (user)    │        │  (static host)   │        │  (data sync) │
   └─────┬──────┘        └────────┬─────────┘        └──────┬───────┘
