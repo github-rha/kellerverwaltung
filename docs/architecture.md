@@ -12,7 +12,7 @@
   │  │  ┌──────────────────────────────────────────────┐  │  │
   │  │  │  Kellerverwaltung PWA                        │  │  │
   │  │  │                                              │  │  │
-  │  │  │  UI layer ←→ Data layer ←→ Storage layer     │  │  │
+  │  │  │  UI layer <─> Data layer <─> Storage layer   │  │  │
   │  │  └──────────────────┬───────────────────────────┘  │  │
   │  │                     │ uses                         │  │
   │  │       ┌─────────────┴──────────────┐               │  │
@@ -69,7 +69,7 @@ data layer.
 │  │  • Sort (vintage,        │<────│  • +1 / -1             │ │
 │  │    date added) button    │back │  • edit button         │ │
 │  │                          │     │  • "more from this     │ │
-│  │                          │     │    producer" → back    │ │
+│  │                          │     │    producer" -> back   │ │
 │  │                          │     │                        │ │
 │  │                          │     │  Edit mode:            │ │
 │  │                          │     │  • fields editable     │ │
@@ -365,11 +365,11 @@ atomically. This keeps code trivial and sidesteps partial-update bugs.
 
 ```
   ┌──────────────┐     read/write      ┌──────────────┐
-  │  In-memory   │◄───────────────────►│  IndexedDB   │
+  │  In-memory   │<───────────────────>│  IndexedDB   │
   │  cellar.json │     (full doc)      │  (blob key)  │
   └──────┬───────┘                     └──────────────┘
          │
-         │  on mutate: validate → save → notify UI
+         │  on mutate: validate -> save -> notify UI
          ▼
   ┌──────────────┐
   │  Reactive UI │
