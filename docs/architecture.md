@@ -420,12 +420,12 @@ simple, correct, and appropriate for a single-device app.
 ### Test pyramid
 
 ```
-         ╱  ╲
-        ╱ E2E╲         ~5 tests
-       ╱──────╲        Safari PWA smoke tests
-      ╱ Integr. ╲      ~15 tests
-     ╱────────────╲     Store ↔ IndexedDB, sync protocol
-    ╱    Unit      ╲    ~40 tests
+         ╱    ╲
+        ╱ E2E  ╲       ~5 tests
+       ╱────────╲      Safari PWA smoke tests
+      ╱ Integr.  ╲     ~15 tests
+     ╱────────────╲    Store <-> IndexedDB, sync protocol
+    ╱    Unit      ╲   ~40 tests
    ╱────────────────╲   Pure functions, schema validation
 ```
 
